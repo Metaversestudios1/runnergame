@@ -8,43 +8,26 @@ const UserSchema = new mongoose.Schema(
     user_id: {
       type: String,
     },
-    contact: { type: String},
+    contact: { type: String },
     password: {
       type: String,
     },
     email: {
       type: String,
-      unique:true
+      unique: true,
     },
-    balance: {
+    current_level: {
       type: Number,
-      default:0
     },
-    last_recharge:{
-      type: Number,
-      default:0
+    current_stats: {
+      heart_rate: { type: Number },
+      kidney_rate: { type: Number },
+      weight: { type: Number },
     },
-    promocode:{
-      type: String,
-    },
-    promocodeStatus: { // New field to store promocode status
-      type: Boolean,
-      default: false, // Default to false if not set
-    },
-    resetOtp: {
-      type: String,
-    },
-    otpExpires: {
-      type: Date,
-    },
-    otp: { type: String }, // Store OTP temporarily
-    isVerified: { type: Boolean, default: false }, // Status to track verification
-    otpExpiresreg:{
-      type: Date,
-    },
-    currency: {
-      type: String,
-    },
+    achievements: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Achievement" },
+    ],
+    health_history: { type: String },
     status: {
       type: Number,
       default: 1, // Tinyint equivalent

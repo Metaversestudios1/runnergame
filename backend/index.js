@@ -12,6 +12,11 @@ const UserRoute = require("./Routes/UserRoute");
 const SettingRoutes = require("./Routes/SettingRoutes");
 
 const PlayerRoutes = require("./Routes/PlayerRoutes");
+const LevelRoute = require("./Routes/LevelRoute");
+const ObstacleRoute = require("./Routes/ObstacleRoute");
+const CollectibleRoute = require("./Routes/CollectibleRoute");
+const GameSessionRoute = require("./Routes/GameSessionRoute");
+const AchievmentRoute = require("./Routes/AchievmentRoute");
 
 // Connect to the database
 connectDB();
@@ -45,6 +50,14 @@ app.use("/api", UserRoute);
 app.use("/api", AdminRoute);
 app.use("/api", SettingRoutes);
 app.use("/api", PlayerRoutes);
+app.use("/api", LevelRoute);
+app.use("/api", ObstacleRoute);
+app.use("/api", CollectibleRoute);
+app.use("/api", GameSessionRoute);
+app.use("/api", AchievmentRoute);
+
+
+
 // Root route
 app.get("/", (req, res) => {
   res.send("Hello World !");
