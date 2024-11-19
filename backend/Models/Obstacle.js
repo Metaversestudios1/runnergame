@@ -2,9 +2,15 @@
 const mongoose = require("mongoose");
 
 const ObstacleSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: { type: String},
   type: { type: String },
-  damage: { type: Number, required: true },
+  damage: { type: Number },
+  photo: {
+    publicId: { type: String },
+    url: { type: String },
+    originalname: { type: String },
+    mimetype: { type: String },
+  },
   deleted_at: {
     type: Date,
     default: null,
