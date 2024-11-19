@@ -8,6 +8,7 @@ const LevelSchema = new mongoose.Schema({
   starting_stats: {
     heart_rate: { type: Number },
     kidney_rate: { type: Number },
+    suger_level:{ type: Number },
     weight: { type: Number },
   },
   obstacles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Obstacle" }],
