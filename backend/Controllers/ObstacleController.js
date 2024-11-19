@@ -98,10 +98,10 @@ const updateobstacles = async (req, res) => {
     const { id, oldData } = req.body;
 
     try {
-        // Validate request body
-        // if (!id || !oldData) {
-        //     return res.status(400).json({ success: false, message: "ID and update data are required" });
-        // }
+       // Validate request body
+        if (!id || !oldData) {
+            return res.status(400).json({ success: false, message: "ID and update data are required" });
+        }
 
         // Initialize an update object with the provided data
         const updateData = { ...oldData };
