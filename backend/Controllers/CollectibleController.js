@@ -48,21 +48,18 @@ cloudinary.config({
     try {
       // Create a new obstacle instance with the request body
       const newCollectible = new Collectible(req.body);
-      console.log("Request Files:", req.files);
-  
+   
       // Check if a photo file is provided in the request
       if (req.files && req.files["photo"] && req.files["photo"][0].buffer) {
         const photoFile = req.files["photo"][0];
-        console.log("Photo File:", photoFile);
-  
+      
         // Upload the image using your helper function
         const uploadResult = await uploadImage(
           photoFile.buffer,
           photoFile.originalname,
           photoFile.mimetype
         );
-        console.log("Upload Result:", uploadResult);
-  
+     
         // Assign photo details to the Collectible document
         newCollectible.photo = {
           publicId: uploadResult.public_id,
@@ -84,10 +81,7 @@ cloudinary.config({
         data: newCollectible,
       });
     } catch (err) {
-      // Log the error for debugging
-      console.error("Error Inserting Obstacle:", err);
-  
-      // Send an error response
+       // Send an error response
       res.status(500).json({
         success: false,
         message: "Error inserting obstacle",
@@ -97,7 +91,7 @@ cloudinary.config({
   };
   const updateCollectible = async (req, res) => {
     const { id, oldData } = req.body;
-console.log(oldData);
+
     try {
         // Validate request body
         if (!id || !oldData) {
