@@ -3,6 +3,9 @@ import { FaAngleDown, FaAngleRight } from "react-icons/fa6";
 import { NavLink } from "react-router-dom";
 import { GrUserManager } from "react-icons/gr";
 import { PiWarehouse } from "react-icons/pi";
+import { BsCollection } from "react-icons/bs";
+import { BiSolidTrafficBarrier } from "react-icons/bi";
+import { SiLevelsdotfyi } from "react-icons/si";
 
 const Sidebar = ({ sidebar, toggleSideBar }) => {
   const [openSubMenu, setOpenSubMenu] = useState({
@@ -80,15 +83,15 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
                 onClick={toggleSideBar}
               >
                 <NavLink
-                  to="/managers"
+                  to="/collectibles"
                   className={({ isActive }) =>
                     isActive
                       ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
                       : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white rounded-lg hover:text-black hover:bg-white"
                   }
                 >
-                <GrUserManager className="text-lg"/>
-                  <div className="text-sm">Managers</div>
+                <BsCollection className="text-lg"/>
+                  <div className="text-sm">Collectibles</div>
                 </NavLink>
               </li>
               <li
@@ -97,31 +100,15 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
                 onClick={toggleSideBar}
               >
                 <NavLink
-                  to="/viewagents"
+                  to="/obstacles"
                   className={({ isActive }) =>
                     isActive
                       ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
                       : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white rounded-lg hover:text-black hover:bg-white"
                   }
                 >
-                  <svg
-                    className="size-4 "
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                  </svg>
-                  <div className="text-sm">Agents</div>
+                <BiSolidTrafficBarrier className="text-lg"/>
+                  <div className="text-sm">Obstacles</div>
                 </NavLink>
               </li>
               <li
@@ -130,15 +117,15 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
                 onClick={toggleSideBar}
               >
                 <NavLink
-                  to="/viewproperties"
+                  to="/levels"
                   className={({ isActive }) =>
                     isActive
                       ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
                       : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white rounded-lg hover:text-black hover:bg-white"
                   }
                 >
-                <PiWarehouse className="text-lg"/>
-                  <div className="text-sm">Properties</div>
+                <SiLevelsdotfyi className="text-lg"/>
+                  <div className="text-sm">Levels</div>
                 </NavLink>
               </li>
               </ul>
@@ -151,105 +138,4 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
 
 export default Sidebar;
 
-              // <li
-              //   className=" hover:scale-105 transition-transform duration-200 "
-              //   onClick={toggleSideBar}
-              //   id="users-accordion "
-              // >
-              //   <NavLink
-              //     to="/categories"
-              //     className={({ isActive }) =>
-              //       isActive
-              //         ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
-              //         : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white rounded-lg hover:text-black hover:bg-white"
-              //     }
-              //   >
-              //   <CiCircleList className="text-lg"/>
-              //     <div className="text-sm">Categories</div>
-              //   </NavLink>
-              // </li>
-              // <li
-              //   className=" hover:scale-105 transition-transform duration-200 "
-              //   onClick={toggleSideBar}
-              //   id="users-accordion "
-              // >
-              //   <NavLink
-              //     to="/products"
-              //     className={({ isActive }) =>
-              //       isActive
-              //         ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
-              //         : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white rounded-lg hover:text-black hover:bg-white"
-              //     }
-              //   >
-              //     <AiOutlineProduct className="text-lg"/>
-              //     <div className="text-sm">Products</div>
-              //   </NavLink>
-              // </li>
-              // <li
-              //   className=" hover:scale-105 transition-transform duration-200 "
-              //   onClick={toggleSideBar}
-              //   id="users-accordion "
-              // >
-              //   <NavLink
-              //     to="/warehouses"
-              //     className={({ isActive }) =>
-              //       isActive
-              //         ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
-              //         : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white rounded-lg hover:text-black hover:bg-white"
-              //     }
-              //   >
-              //     <PiWarehouse className="text-lg"/>
-              //     <div className="text-sm">Warehouses</div>
-              //   </NavLink>
-              // </li>
-              // <li
-              //   className=" hover:scale-105 transition-transform duration-200 "
-              //   onClick={toggleSideBar}
-              //   id="users-accordion "
-              // >
-              //   <NavLink
-              //     to="/dealers"
-              //     className={({ isActive }) =>
-              //       isActive
-              //         ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
-              //         : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white rounded-lg hover:text-black hover:bg-white"
-              //     }
-              //   >
-              //     <FaPeopleRoof className="text-lg"/>
-              //     <div className="text-sm">Dealers</div>
-              //   </NavLink>
-              // </li>
-              // <li
-              //   className=" hover:scale-105 transition-transform duration-200 "
-              //   onClick={toggleSideBar}
-              //   id="users-accordion "
-              // >
-              //   <NavLink
-              //     to="/assigningorder"
-              //     className={({ isActive }) =>
-              //       isActive
-              //         ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
-              //         : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white rounded-lg hover:text-black hover:bg-white"
-              //     }
-              //   >
-              //     <GiNotebook className="text-xl -rotate-12"/>
-              //     <div className="text-sm">Order assigning</div>
-              //   </NavLink>
-              // </li>
-              // <li
-              //   className=" hover:scale-105 transition-transform duration-200 "
-              //   onClick={toggleSideBar}
-              //   id="users-accordion "
-              // >
-              //   <NavLink
-              //     to="/assigningorder"
-              //     className={({ isActive }) =>
-              //       isActive
-              //         ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
-              //         : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white rounded-lg hover:text-black hover:bg-white"
-              //     }
-              //   >
-              //     <GrHistory className="text-lg"/>
-              //     <div className="text-sm">Order History</div>
-              //   </NavLink>
-              // </li>
+          

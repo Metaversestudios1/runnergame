@@ -65,7 +65,7 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
     res.clearCookie("connect.sid"); // Name of the session ID cookie
     res.clearCookie("token"); // Name of the session ID cookie
-    res.status(200).json({ status: true, message: "Successfully logged out" });
+    res.status(200).json({ success: true, message: "Successfully logged out" });
 
 }
 
