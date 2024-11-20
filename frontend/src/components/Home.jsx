@@ -116,7 +116,7 @@ function NameCard({
           <Icon path="res-react-dash-options" className="w-2 h-2" />
         </div>
         <div className="tooltip-body text-center p-3">
-          <div className="text-white font-bold">$1300.50</div>
+          <div className="text-black font-bold">$1300.50</div>
           <div className="">Revenue from 230 sales</div>
         </div>
       </div>
@@ -125,7 +125,7 @@ function NameCard({
       <div className="flex p-4 h-full flex-col">
         <div className="">
           <div className="flex items-center">
-            <div className="font-bold text-white">Your Work Summary</div>
+            <div className="font-bold text-black">Your Work Summary</div>
             <div className="flex-grow" />
   
             <Icon path="res-react-dash-graph-range" className="w-4 h-4" />
@@ -194,7 +194,7 @@ function NameCard({
             <Image path={`mock_faces_${imgId}`} className="w-10 h-10" />
             <div className="ml-2">
               <div className="flex items-center">
-                <div className="mr-2 font-bold text-white">{name}</div>
+                <div className="mr-2 font-bold text-black">{name}</div>
                 <HomeIcon className="w-8 h-8" />  {/* Use the specific icon */}
               </div>
               <div className="text-sm ">{position}</div>
@@ -274,7 +274,7 @@ function AddComponent() {
             className="w-full h-full"
           />
         </div>
-        <div className="text-white font-bold mt-3">
+        <div className="text-black font-bold mt-3">
           No Components Created Yet
         </div>
         <div className="mt-2">Simply create your first component</div>
@@ -316,7 +316,7 @@ function Satisfication() {
   return (
     <div className="p-4 h-full">
       <div className="flex justify-between items-center">
-        <div className="text-white font-bold">Satisfication</div>
+        <div className="text-black font-bold">Satisfication</div>
         <Icon path="res-react-dash-options" className="w-2 h-2" />
       </div>
       <div className="mt-3">From all projects</div>
@@ -514,7 +514,7 @@ function Segmentation() {
   return (
     <div className="p-4 h-full">
       <div className="flex justify-between items-center">
-        <div className="text-white font-bold">Segmentation</div>
+        <div className="text-black font-bold">Segmentation</div>
 
         <Icon path="res-react-dash-options" className="w-2 h-2" />
       </div>
@@ -565,7 +565,7 @@ function Graph() {
         <Icon path="res-react-dash-options" className="w-2 h-2" />
       </div>
       <div className="tooltip-body text-center p-3">
-        <div className="text-white font-bold">$1300.50</div>
+        <div className="text-black font-bold">$1300.50</div>
         <div className="">Revenue from 230 sales</div>
       </div>
     </div>
@@ -575,7 +575,7 @@ function Graph() {
     <div className="flex p-4 h-full flex-col">
       <div className="">
         <div className="flex items-center">
-          <div className="font-bold text-white">Your Work Summary</div>
+          <div className="font-bold text-black">Your Work Summary</div>
           <div className="flex-grow" />
           
           <Icon path="res-react-dash-graph-range" className="w-4 h-4" />
@@ -638,7 +638,7 @@ function TopCountries() {
   return (
     <div className="flex p-4 flex-col h-full">
       <div className="flex justify-between items-center">
-        <div className="text-white font-bold">Top Countries</div>
+        <div className="text-black font-bold">Top Countries</div>
         <Icon path="res-react-dash-plus" className="w-5 h-5" />
       </div>
       <div className="">favourites</div>
