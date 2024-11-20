@@ -48,9 +48,10 @@ cloudinary.config({
     try {
       // Create a new obstacle instance with the request body
       const newCollectible = new Collectible(req.body);
-   
       // Check if a photo file is provided in the request
       if (req.files && req.files["photo"] && req.files["photo"][0].buffer) {
+
+        console.log("OK")
         const photoFile = req.files["photo"][0];
       
         // Upload the image using your helper function
@@ -67,10 +68,10 @@ cloudinary.config({
           originalname: photoFile.originalname,
           mimetype: photoFile.mimetype,
         };
+        console.log(newCollectible)
       } else {
         console.log("No photo file provided in the request.");
       }
-  
       // Save the obstacle to the database
       await newCollectible.save();
   
@@ -84,7 +85,7 @@ cloudinary.config({
        // Send an error response
       res.status(500).json({
         success: false,
-        message: "Error inserting obstacle",
+        message: "Error inserting collectible",
         error: err.message,
       });
     }

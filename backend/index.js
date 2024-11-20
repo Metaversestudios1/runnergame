@@ -23,7 +23,7 @@ const ImpactRoute = require("./Routes/ImpactRoute");
 connectDB();
 const server = http.createServer(app);
 const allowedOrigins = [
-"http://localhost:3000", 
+"http://localhost:5173", 
 ];
 const corsOptions = {
   origin: function (origin, callback) {
