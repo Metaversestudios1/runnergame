@@ -23,14 +23,22 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
   };
   return (
     <>
+    {sidebar && (
       <div
-        className={`h-full shadow-2xl bg-white w-[260px] flex-col  overflow-y-auto overflow-x-hidden ${
-          sidebar ? "hidden" : "flex"
-        } md:block`}
-      >
+        className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+        onClick={toggleSideBar}
+      />
+    )}
+
+    {/* Sidebar */}
+    <div
+      className={`fixed top-0 left-0 z-50 h-full bg-white shadow-lg transition-transform duration-300 ease-in-out ${
+        sidebar ? "translate-x-0" : "-translate-x-full"
+      }  md:translate-x-0 md:relative md:flex`}
+    >
         <div
           id="docs-sidebar"
-          className={`bg-white hs-overlay   [--auto-close:lg] start-0 z-[60]  border-gray-200 pt-7 pb-10 overflow-y-auto sidebar
+          className={`w-[240px] bg-white hs-overlay   [--auto-close:lg] start-0 z-[60]  border-gray-200 pt-7 pb-10 overflow-y-auto sidebar
           }`}
         >
           <div className="px-6">

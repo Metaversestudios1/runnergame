@@ -15,14 +15,12 @@ const Layout = ({ children }) => {
       <Navbar toggleSideBar={toggleSideBar} />
 
       {/* Sidebar and Content */}
-      <div className="flex flex-grow">
+      <div className="flex flex-1">
         {/* Sidebar occupying 2/10th of the width */}
         <Sidebar
           sidebar={sideBar}
           toggleSideBar={toggleSideBar}
-          className={` h-full transition-all duration-300 ${
-            sideBar ? "block" : "hidden"
-          }`}
+         
         />
 
         {/* Main Content (Outlet) taking the rest */}
