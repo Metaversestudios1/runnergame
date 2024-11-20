@@ -184,7 +184,7 @@ console.log(response)
                       scope="row"
                       className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-2 border-gray-300"
                     >
-                      <img className="w-14" src={item?.photo.url ? item?.photo.url :"-"} alt="img" />
+                      <img className="w-14" src={item?.photo?.url ? item?.photo?.url :"-"} alt="img" />
                     </th>
 
                     <th
@@ -221,16 +221,30 @@ console.log(response)
       )}
       {obstacles.length !== 0 && (
         <div className="flex flex-col items-center my-10">
-          <span className="text-sm text-black">
-            Showing <span className="font-semibold text-black">1</span> to{" "}
-            <span className="font-semibold text-black">5</span> of{" "}
-            <span className="font-semibold text-black">{count}</span> Entries
+            <span className="text-sm text-black">
+            Showing{" "}
+            <span className="font-semibold text-black">{startIndex + 1}</span>{" "}
+            to{" "}
+            <span className="font-semibold text-black">
+              {Math.min(startIndex + pageSize, count)}
+            </span>{" "}
+            of <span className="font-semibold text-black">{count}</span> Entries
           </span>
           <div className="inline-flex mt-2 xs:mt-0">
-            <button className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900">
+            <button
+              className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+            >
               Prev
             </button>
-            <button className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900">
+            <button
+              className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900"
+              onClick={() => setPage(page + 1)}
+              disabled={
+                obstacles.length < pageSize || startIndex + pageSize >= count
+              }
+            >
               Next
             </button>
           </div>

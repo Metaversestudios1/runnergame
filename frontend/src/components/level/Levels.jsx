@@ -10,7 +10,7 @@ const Levels = () => {
   const [noData, setNoData] = useState(false);
   const [loader, setLoader] = useState(true);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [count, setCount] = useState(0);
   const [search, setSearch] = useState("");
 
@@ -28,7 +28,7 @@ const Levels = () => {
         }/api/getAlllevel?page=${page}&limit=${pageSize}&search=${search}`
       );
       const response = await res.json();
-console.log(response)
+      console.log(response);
       if (response.success) {
         setNoData(false);
         if (response.result.length === 0) {
@@ -44,47 +44,47 @@ console.log(response)
     }
   };
 
-    const handleDelete = async (e, id) => {
-      e.preventDefault();
-      const permissionOfDelete = window.confirm(
-        "Are you sure, you want to delete the employee"
+  const handleDelete = async (e, id) => {
+    e.preventDefault();
+    const permissionOfDelete = window.confirm(
+      "Are you sure, you want to delete the employee"
+    );
+    if (permissionOfDelete) {
+      let employeeOne = employees.length === 1;
+      if (count === 1) {
+        employeeOne = false;
+      }
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/deleteEmployee`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+        }
       );
-      if (permissionOfDelete) {
-        let employeeOne = employees.length === 1;
-        if (count === 1) {
-          employeeOne = false;
-        }
-        const res = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/api/deleteEmployee`,
-          {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id }),
-          }
-        );
-        if (!res.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const response = await res.json();
-        if (response.success) {
-          toast.success("Employee is deleted Successfully!", {
-            position: "top-right",
-            autoClose: 1000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          if (employeeOne) {
-            setPage(page - 1);
-          } else {
-            fetchData();
-          }
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const response = await res.json();
+      if (response.success) {
+        toast.success("Employee is deleted Successfully!", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        if (employeeOne) {
+          setPage(page - 1);
+        } else {
+          fetchData();
         }
       }
-    };
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -167,7 +167,7 @@ console.log(response)
                   obstacles
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
-                collectibles
+                  collectibles
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
                   Action
@@ -209,7 +209,7 @@ console.log(response)
                     </td>
                     <td className=" p-5   border-2  border-gray-300">
                       <div className="flex items-center">
-                        <NavLink to={`/levels/editlevel${item?._id}`}>
+                        <NavLink to={`/levels/editlevel/${item?._id}`}>
                           <CiEdit className="text-2xl cursor-pointer text-blue-900" />
                         </NavLink>
                       </div>
@@ -229,16 +229,30 @@ console.log(response)
       )}
       {levels.length !== 0 && (
         <div className="flex flex-col items-center my-10">
-          <span className="text-sm text-black">
-            Showing <span className="font-semibold text-black">1</span> to{" "}
-            <span className="font-semibold text-black">5</span> of{" "}
-            <span className="font-semibold text-black">{count}</span> Entries
+            <span className="text-sm text-black">
+            Showing{" "}
+            <span className="font-semibold text-black">{startIndex + 1}</span>{" "}
+            to{" "}
+            <span className="font-semibold text-black">
+              {Math.min(startIndex + pageSize, count)}
+            </span>{" "}
+            of <span className="font-semibold text-black">{count}</span> Entries
           </span>
           <div className="inline-flex mt-2 xs:mt-0">
-            <button className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900">
+            <button
+              className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+            >
               Prev
             </button>
-            <button className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900">
+            <button
+              className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900"
+              onClick={() => setPage(page + 1)}
+              disabled={
+                levels.length < pageSize || startIndex + pageSize >= count
+              }
+            >
               Next
             </button>
           </div>

@@ -10,7 +10,7 @@ const Collectibles = () => {
   const [noData, setNoData] = useState(false);
   const [loader, setLoader] = useState(true);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [count, setCount] = useState(0);
   const [search, setSearch] = useState("");
 
@@ -219,18 +219,32 @@ console.log(response)
           Currently! There are no Collectibles in the storage.
         </div>
       )}
-      {collectibles.length !== 0 && (
+       {collectibles.length !== 0 && (
         <div className="flex flex-col items-center my-10">
-          <span className="text-sm text-black">
-            Showing <span className="font-semibold text-black">1</span> to{" "}
-            <span className="font-semibold text-black">5</span> of{" "}
-            <span className="font-semibold text-black">{10}</span> Entries
+            <span className="text-sm text-black">
+            Showing{" "}
+            <span className="font-semibold text-black">{startIndex + 1}</span>{" "}
+            to{" "}
+            <span className="font-semibold text-black">
+              {Math.min(startIndex + pageSize, count)}
+            </span>{" "}
+            of <span className="font-semibold text-black">{count}</span> Entries
           </span>
           <div className="inline-flex mt-2 xs:mt-0">
-            <button className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900">
+            <button
+              className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+            >
               Prev
             </button>
-            <button className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900">
+            <button
+              className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900"
+              onClick={() => setPage(page + 1)}
+              disabled={
+                collectibles.length < pageSize || startIndex + pageSize >= count
+              }
+            >
               Next
             </button>
           </div>

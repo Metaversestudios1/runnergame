@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import $ from "jquery";
@@ -9,65 +9,69 @@ import { FaAngleDown } from "react-icons/fa6";
 
 const EditCollectible = () => {
   const [loader, setLoader] = useState(false);
-  const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
+  const params = useParams();
+  const { id } = params;
   const navigate = useNavigate();
   const initialState = {
     name: "",
     type: "",
     benefit: "",
-    photo: {
-      publicId: "",
-      url: "",
-      originalname: "",
-      mimetype: "",
-    },
+    photo: null,
   };
   const [data, setData] = useState(initialState);
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const fetchData = async () => {
+    const res = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/api/getSingleCollectible`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }), // No need for JSON.stringify
+      }
+    );
 
+    const response = await res.json();
+    if (response.success) {
+      setData((prevData) => ({
+        ...prevData,
+        name: response.result?.name,
+        type: response.result?.type,
+        benefit: response.result?.benefit,
+        photo: response.result?.photo,
+      }));
+    }
+  };
   const validateCollectibleForm = () => {
-
-    // Initialize jQuery validation
     $("#collectibleform").validate({
       rules: {
-        name: {
-          required: true,
-        },
-        type: {
-          required: true,
-          email: true,
-        },
-        benefit: {
-          required: true,
-        },
+        name: { required: true },
+        type: { required: true },
+        benefit: { required: true, number: true },
       },
       messages: {
-        name: {
-          required: "Please enter name",
-        },
-        type: {
-          required: "Please enter type",
-        },
+        name: { required: "Please enter name" },
+        type: { required: "Please enter type" },
         benefit: {
           required: "Please enter benefit",
+          number: "Must be a number",
         },
       },
       errorElement: "div",
-      errorPlacement: function (error, element) {
+      errorPlacement: (error, element) => {
         error.addClass("invalid-feedback");
         error.insertAfter(element);
       },
-      highlight: function (element, errorClass, validClass) {
+      highlight: (element) => {
         $(element).addClass("is-invalid").removeClass("is-valid");
       },
-      unhighlight: function (element, errorClass, validClass) {
+      unhighlight: (element) => {
         $(element).removeClass("is-invalid").addClass("is-valid");
       },
     });
 
-    // Return validation status
     return $("#collectibleform").valid();
   };
 
@@ -78,28 +82,48 @@ const EditCollectible = () => {
       [name]: value,
     }));
   };
-  console.log(data);
+  const handleFileChange = (e) => {
+    setData((prevState) => ({
+      ...prevState,
+      photo: e.target.files[0], // Capture the single file
+    }));
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!validateCollectibleForm()) {
-      //setError("Please fill in all required fields.");
-      return;
+      return; // Stop submission if validation fails
     }
 
     try {
       setLoader(true);
+      const formData = new FormData();
+      formData.append("id", id);
 
-      const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/insertCollectibles`,
+      const dataPayload = {};
+
+      Object.keys(data).forEach((key) => {
+        if (key === "photo") {
+          formData.append("photo", data.photo);
+        } else {
+          dataPayload[key] = data[key];
+        }
+      });
+
+      formData.append("data", JSON.stringify(dataPayload));
+
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/updateCollectible`,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+          method: "PUT",
+          body: formData, // Send the formData
         }
       );
-      const response = await res.json();
-      if (response.success) {
-        toast.success("New Collectible is added Successfully!", {
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success("Collectible updated successfully!", {
           position: "top-right",
           autoClose: 1000,
           hideProgressBar: false,
@@ -109,17 +133,21 @@ const EditCollectible = () => {
           progress: undefined,
           theme: "light",
         });
-        setTimeout(() => {
-          navigate("/collectibles");
-        }, 1500);
+
+        // Reset form and navigate
+        setData(initialState);
+        setTimeout(() => navigate("/collectibles"), 1500);
       } else {
         setLoader(false);
-        setError(response.message);
+        setError(result.message);
       }
     } catch (err) {
-      console.log(err);
+      setLoader(false);
+      setError("An error occurred while submitting the form.");
+      console.error(err);
     }
   };
+
   const handleGoBack = () => {
     navigate(-1);
   };
@@ -146,7 +174,7 @@ const EditCollectible = () => {
         </div>
         <div className="flex items-center">
           <div className="text-2xl font-bold mx-2 my-8 px-4">
-            Add Collectible
+            Edit Collectible
           </div>
         </div>
       </div>
@@ -163,7 +191,7 @@ const EditCollectible = () => {
         </div>
       ) : (
         <div className="w-[70%] m-auto my-10">
-          <form id="managerform">
+          <form id="collectibleform">
             <div className="grid gap-6 mb-6 md:grid-cols-2 items-center">
               <div>
                 <label
@@ -223,16 +251,15 @@ const EditCollectible = () => {
                   htmlFor="photo"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
                 >
-                  Photo<span className="text-red-900 text-lg ">&#x2a;</span>
+                  Photo
                 </label>
                 <input
                   name="photo"
-                  value={data.photo}
-                  // onChange={handleFileChange}
+                  onChange={handleFileChange}
                   type="file"
                   id="photo"
+                  accept="image/*"
                   className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black block w-full p-2.5 "
-                  required
                 />
               </div>
             </div>
@@ -243,7 +270,7 @@ const EditCollectible = () => {
               onClick={handleSubmit}
               className="text-white bg-[#16144b] hover:bg-[#16144bea] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
             >
-              ADD
+              UPDATE
             </button>
           </form>
         </div>

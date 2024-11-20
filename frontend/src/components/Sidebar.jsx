@@ -24,18 +24,18 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
   return (
     <>
       <div
-        className={`h-full bg-[#4B49AC] w-[260px] flex-col  overflow-y-auto overflow-x-hidden ${
+        className={`h-full shadow-2xl bg-white w-[260px] flex-col  overflow-y-auto overflow-x-hidden ${
           sidebar ? "hidden" : "flex"
         } md:block`}
       >
         <div
           id="docs-sidebar"
-          className={`bg-[#4B49AC]  hs-overlay   [--auto-close:lg] start-0 z-[60]  border-gray-200 pt-7 pb-10 overflow-y-auto sidebar
+          className={`bg-white hs-overlay   [--auto-close:lg] start-0 z-[60]  border-gray-200 pt-7 pb-10 overflow-y-auto sidebar
           }`}
         >
           <div className="px-6">
             <a
-              className="flex-none text-xl font-semibold text-white"
+              className="flex-none text-xl font-semibold "
               href="/"
               aria-label="Brand"
             >
@@ -56,7 +56,7 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
                   className={({ isActive }) =>
                     isActive
                       ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
-                      : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white rounded-lg hover:text-black hover:bg-white"
+                      : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
                   }
                 >
                   <svg
@@ -87,7 +87,7 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
                   className={({ isActive }) =>
                     isActive
                       ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
-                      : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white rounded-lg hover:text-black hover:bg-white"
+                      : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
                   }
                 >
                 <BsCollection className="text-lg"/>
@@ -104,7 +104,7 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
                   className={({ isActive }) =>
                     isActive
                       ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
-                      : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white rounded-lg hover:text-black hover:bg-white"
+                      : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
                   }
                 >
                 <BiSolidTrafficBarrier className="text-lg"/>
@@ -121,7 +121,7 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
                   className={({ isActive }) =>
                     isActive
                       ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
-                      : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white rounded-lg hover:text-black hover:bg-white"
+                      : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
                   }
                 >
                 <SiLevelsdotfyi className="text-lg"/>

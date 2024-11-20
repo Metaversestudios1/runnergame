@@ -91,54 +91,75 @@ cloudinary.config({
     }
   };
   const updateCollectible = async (req, res) => {
-    const { id, oldData } = req.body;
-
+    const { id } = req.body;
+    const dataString = req.body.data; // Extract the `data` field as a string
+  
     try {
-        // Validate request body
-        if (!id || !oldData) {
-            return res.status(400).json({ success: false, message: "ID and update data are required" });
-        }
-
-        // Initialize an update object with the provided data
-        const updateData = { ...oldData };
-
-        // Check if a photo file exists in the request
-        if (req.files && req.files["photo"] && req.files["photo"][0].buffer) {
-            const photoFile = req.files["photo"][0];
-
-            // Upload the image using your helper function
-            const uploadResult = await uploadImage(
-                photoFile.buffer,
-                photoFile.originalname,
-                photoFile.mimetype
-            );
-
-            // Add photo details to the update object
-            updateData.photo = {
-                publicId: uploadResult.public_id,
-                url: uploadResult.secure_url,
-                originalname: photoFile.originalname,
-                mimetype: photoFile.mimetype,
-            };
-        }
-
-        // Update the collectible document in the database
-        const result = await Collectible.updateOne(
-            { _id: id },
-            { $set: updateData } // Update the fields in the document
+      // Validate ID and data
+      if (!id || !dataString) {
+        return res.status(400).json({
+          success: false,
+          message: "ID and update data are required",
+        });
+      }
+  
+      // Parse the `data` string into an object
+      const updateData = JSON.parse(dataString);
+  
+      // Check if a photo file exists
+      if (req.files && req.files["photo"] && req.files["photo"][0]?.buffer) {
+        const photoFile = req.files["photo"][0];
+  
+        // Upload the image
+        const uploadResult = await uploadImage(
+          photoFile.buffer,
+          photoFile.originalname,
+          photoFile.mimetype
         );
-
-        if (result.nModified === 0) {
-            return res.status(404).json({ success: false, message: "Collectible not found or no changes made" });
-        }
-
-        // Respond with success
-        res.status(200).json({ success: true, message: "Collectible updated successfully", result });
+  
+        // Add photo details to update object
+        updateData.photo = {
+          publicId: uploadResult.public_id,
+          url: uploadResult.secure_url,
+          originalname: photoFile.originalname,
+          mimetype: photoFile.mimetype,
+        };
+      }
+  
+      // Update the document in the database
+      const updatedCollectible = await Collectible.findOneAndUpdate(
+        { _id: id },
+        { $set: updateData },
+        { new: true, runValidators: true } // Return updated document and validate the schema
+      );
+  
+      console.log(updatedCollectible);
+  
+      // Check if the document was updated
+      if (!updatedCollectible) {
+        return res.status(404).json({
+          success: false,
+          message: "Collectible not found or no changes made",
+        });
+      }
+  
+      // Respond with success
+      return res.status(200).json({
+        success: true,
+        message: "Collectible updated successfully",
+        result: updatedCollectible,
+      });
     } catch (err) {
-        // Handle errors and respond with an error message
-        res.status(500).json({ success: false, message: "Error updating Collectible", error: err.message });
+      // Handle unexpected errors
+      console.error("Error updating collectible:", err.message);
+      return res.status(500).json({
+        success: false,
+        message: "An error occurred while updating the collectible",
+        error: err.message,
+      });
     }
-};
+  };
+  
 
 
 const getAllCollectible = async (req,res) => {

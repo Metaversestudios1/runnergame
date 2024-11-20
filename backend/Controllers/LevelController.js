@@ -15,18 +15,18 @@ const insertlevel = async (req, res) => {
 };
 
   const updatelevel = async (req, res) => {
-    const { id, oldData } = req.body;
-
+    const { id, data } = req.body;
+console.log(req.body)
     try {
-        if (!id || !oldData) {
+        if (!id || !data) {
             return res.status(400).json({ success: false, message: "ID and update data are required" });
         }
 
         const result = await level.updateOne(
             { _id: id },
-            { $set: oldData } // Ensure oldData contains only fields to be updated
+            { $set: data } // Ensure oldData contains only fields to be updated
         );
-
+console.log(result)
         if (result.nModified === 0) {
             return res.status(404).json({ success: false, message: "level not found or no changes made" });
         }

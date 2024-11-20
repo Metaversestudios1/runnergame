@@ -8,16 +8,27 @@ const Layout = ({ children }) => {
   const toggleSideBar = () => {
     setSideBar(!sideBar);
   };
+
   return (
-    <div className="flex h-screen">
-      <Sidebar
-        sidebar={sideBar}
-        className=""
-        toggleSideBar={toggleSideBar}
-      />
-      <div className="flex flex-col flex-grow overflow-y-auto w-full">
-        <Navbar toggleSideBar={toggleSideBar} />
-        <Outlet/>
+    <div className="flex flex-col h-screen">
+      {/* Navbar at the top */}
+      <Navbar toggleSideBar={toggleSideBar} />
+
+      {/* Sidebar and Content */}
+      <div className="flex flex-grow">
+        {/* Sidebar occupying 2/10th of the width */}
+        <Sidebar
+          sidebar={sideBar}
+          toggleSideBar={toggleSideBar}
+          className={` h-full transition-all duration-300 ${
+            sideBar ? "block" : "hidden"
+          }`}
+        />
+
+        {/* Main Content (Outlet) taking the rest */}
+        <div className="flex-grow p-4 overflow-y-auto">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

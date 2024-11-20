@@ -95,53 +95,59 @@ const insertobstacles = async (req, res) => {
   }
 };
 const updateobstacles = async (req, res) => {
-    const { id, oldData } = req.body;
-
-    try {
-       // Validate request body
-        if (!id || !oldData) {
-            return res.status(400).json({ success: false, message: "ID and update data are required" });
-        }
-
-        // Initialize an update object with the provided data
-        const updateData = { ...oldData };
-
-        // Check if a photo file exists in the request
-        if (req.files && req.files["photo"] && req.files["photo"][0].buffer) {
-            const photoFile = req.files["photo"][0];
-
-            // Upload the image using your helper function
-            const uploadResult = await uploadImage(
-                photoFile.buffer,
-                photoFile.originalname,
-                photoFile.mimetype
-            );
-
-            // Add photo details to the update object
-            updateData.photo = {
-                publicId: uploadResult.public_id,
-                url: uploadResult.secure_url,
-                originalname: photoFile.originalname,
-                mimetype: photoFile.mimetype,
-            };
-        }
-
-        // Update the obstacles document in the database
-        const result = await obstacles.updateOne(
-            { _id: id },
-            { $set: updateData } // Update the fields in the document
-        );
-
-        if (result.nModified === 0) {
-            return res.status(404).json({ success: false, message: "obstacles not found or no changes made" });
-        }
-
-        // Respond with success
-        res.status(200).json({ success: true, message: "obstacles updated successfully", result });
-    } catch (err) {
-        // Handle errors and respond with an error message
-        res.status(500).json({ success: false, message: "Error updating obstacles", error: err.message });
+  const { id } = req.body;
+  const dataString = req.body.data; 
+  try {
+    if (!id || !dataString) {
+      return res.status(400).json({
+        success: false,
+        message: "ID and data are required",
+      });
     }
+
+    const updateData = JSON.parse(dataString);
+    if (req.files && req.files["photo"] && req.files["photo"][0]?.buffer) {
+      const photoFile = req.files["photo"][0];
+
+      const uploadResult = await uploadImage(
+        photoFile.buffer,
+        photoFile.originalname,
+        photoFile.mimetype
+      );
+
+      updateData.photo = {
+        publicId: uploadResult.public_id,
+        url: uploadResult.secure_url,
+        originalname: photoFile.originalname,
+        mimetype: photoFile.mimetype,
+      };
+    }
+
+    const updatedObstacle = await obstacles.findOneAndUpdate(
+      { _id: id },
+      { $set: updateData },
+      { new: true, runValidators: true } 
+    );
+    if (!updatedObstacle) {
+      return res.status(404).json({
+        success: false,
+        message: "Obstacle not found or no changes made",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Obstacle updated successfully",
+      result: updatedObstacle,
+    });
+  } catch (err) {
+    console.error("Error Obstacle:", err.message);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while updating the Obstacle",
+      error: err.message,
+    });
+  }
 };
 
 

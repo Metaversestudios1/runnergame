@@ -26,7 +26,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/collectibles" element={<Collectibles />} />
               <Route path="/collectibles/addcollectible" element={<AddCollectible />} />
-              <Route path="/collectibles/edit/:id" element={<EditCollectible />} />
+              <Route path="/collectibles/editcollectible/:id" element={<EditCollectible />} />
               <Route path="/obstacles" element={<Obstacles />} />
               <Route path="/obstacles/addobstacle" element={<AddObstacle />} />
               <Route path="/obstacles/editobstacle/:id" element={<EditObstacle />} />

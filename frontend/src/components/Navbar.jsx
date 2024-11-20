@@ -51,7 +51,7 @@ const Navbar = ({ toggleSideBar }) => {
   };
 
   return (
-    <header className="flex flex-wrap justify-start z-50 w-full text-sm shadow-lg">
+    <header className=" flex flex-wrap justify-start z-50 w-full text-sm shadow-lg">
       <ToastContainer
         position="top-right"
         autoClose={2000}
@@ -65,7 +65,7 @@ const Navbar = ({ toggleSideBar }) => {
         theme="light"
       />
       <nav
-        className="relative w-full bg-white border border-gray-200 px-4 flex items-center justify-between py-3"
+        className="relative w-full bg-[#4B49AC] px-4 flex items-center justify-between py-3"
         aria-label="Global"
       >
         <div className="flex items-center ">
@@ -119,12 +119,12 @@ const Navbar = ({ toggleSideBar }) => {
           onMouseLeave={() => setSettingDropdown(false)}
         >
           <div className="flex items-center justify-center text-xl font-semibold cursor-pointer">
-            <IoMdSettings className="text- pr-1  mt-[2px]  text-black" />
-            <div className="text-lg">Setting</div>
+            <IoMdSettings className="text- pr-1  mt-[2px]  text-white" />
+            <div className="text-lg text-white">Setting</div>
             {settingDropdown ? (
-              <FaAngleDown className="text-end text-sm mt-1 mx-4" />
+              <FaAngleDown className="text-end text-sm mt-1 mx-4 text-white" />
             ) : (
-              <FaAngleRight className="text-end text-sm mt-1 mx-4" />
+              <FaAngleRight className="text-end text-sm mt-1 mx-4 text-white" />
             )}
           </div>
           {settingDropdown && (
