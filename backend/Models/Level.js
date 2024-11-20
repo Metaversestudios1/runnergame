@@ -11,8 +11,12 @@ const LevelSchema = new mongoose.Schema({
     suger_level:{ type: Number },
     weight: { type: Number },
   },
-  obstacles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Obstacle" }],
-  collectibles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Collectible" }],
+  obstacles: [{ type: mongoose.Schema.Types.ObjectId, ref: "obstacle" }],
+  collectibles: [{ type: mongoose.Schema.Types.ObjectId, ref: "collectible" }],
+  deleted_at: {
+    type: Date,
+    default: null,
+  },
 },
 { timestamps: true, collection: "level" }
 );
