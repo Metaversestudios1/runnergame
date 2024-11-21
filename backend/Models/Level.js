@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const LevelSchema = new mongoose.Schema({
+  user_id: { type: String },
   level_number: { type: Number, required: true },
   environment: { type: String },
   objectives: { type: [String] },
