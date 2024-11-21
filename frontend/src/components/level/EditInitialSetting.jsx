@@ -22,9 +22,8 @@ const EditLevel = () => {
 
   const initialState = {
     level_number: "",
-    starting_stats: { heart_rate: "", kidney_rate: "", weight: "" },
-    obstacles: [],
-    collectibles: [],
+    starting_stats: { intial_heart_rate: "", intial_kidney_rate: "", intial_weight: "" , intial_suger_level:""},
+
   };
 
   const [data, setData] = useState(initialState);
@@ -50,12 +49,11 @@ const EditLevel = () => {
         ...prevData,
         level_number: response.result?.level_number,
         starting_stats: {
-          heart_rate: response.result?.starting_stats?.heart_rate,
-          kidney_rate: response.result?.starting_stats?.kidney_rate,
-          weight: response.result?.starting_stats?.weight,
+          intial_heart_rate: response.result?.starting_stats?.intial_heart_rate,
+          intial_kidney_rate: response.result?.starting_stats?.intial_kidney_rate,
+          intial_weight: response.result?.starting_stats?.intial_weight,
+          intial_suger_level: response.result?.starting_stats?.intial_suger_level,
         },
-        obstacles: response.result?.obstacles,
-        collectibles: response.result?.collectibles,
       }));
     }
   };
@@ -243,7 +241,7 @@ const EditLevel = () => {
           />
         </div>
         <div className="flex items-center">
-          <div className="text-2xl font-bold mx-2 my-8 px-4">Edit Level</div>
+          <div className="text-2xl font-bold mx-2 my-8 px-4">Edit Initial setting</div>
         </div>
       </div>
 
@@ -283,172 +281,85 @@ const EditLevel = () => {
               </div>
 
               {/* Collectibles Dropdown */}
-              <div>
-                <label
-                  htmlFor="collectibles"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
-                >
-                  Collectibles
-                </label>
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setDropdownCollectiblesOpen(!dropdownCollectiblesOpen)
-                    }
-                    onBlur={(e) => handleDropdownBlur(e, "collectibles")}
-                    className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black w-full p-2.5 flex justify-between items-center"
-                  >
-                    Select Collectibles
-                    <FaAngleDown className="text-end" />
-                  </button>
-                  {dropdownCollectiblesOpen && (
-                    <div
-                      ref={dropdownCollectiblesRef}
-                      className="absolute top-full left-0 bg-white border border-gray-300 rounded-sm shadow-lg w-full"
-                    >
-                      {collectibles.map((item) => (
-                        <div
-                          key={item._id}
-                          className="p-2 bg-gray-200 text-gray-900 text-sm focus:ring-blue-500 focus:border-black block w-full"
-                          onMouseDown={(e) => e.preventDefault()}
-                        >
-                          <input
-                            type="checkbox"
-                            id={`collectible-${item._id}`}
-                            value={item._id}
-                            checked={data.collectibles.includes(item._id)}
-                            onChange={() =>
-                              handleCheckboxChange(item._id, "collectibles")
-                            }
-                            className="mr-2"
-                          />
-                          <label
-                            htmlFor={`collectible-${item._id}`}
-                            className="text-gray-900 text-sm"
-                          >
-                            {item.name}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Obstacles Dropdown */}
-              <div>
-                <label
-                  htmlFor="obstacles"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
-                >
-                  Obstacles
-                </label>
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setDropdownObstaclesOpen(!dropdownObstaclesOpen)
-                    }
-                    onBlur={(e) => handleDropdownBlur(e, "obstacles")}
-                    className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black w-full p-2.5 flex justify-between items-center"
-                  >
-                    Select Obstacles
-                    <FaAngleDown className="text-end" />
-                  </button>
-                  {dropdownObstaclesOpen && (
-                    <div
-                      ref={dropdownObstaclesRef}
-                      className="absolute top-full left-0 bg-white border border-gray-300 rounded-sm shadow-lg w-full"
-                    >
-                      {obstacles.map((item) => (
-                        <div
-                          key={item._id}
-                          className="p-2 bg-gray-200 text-gray-900 text-sm focus:ring-blue-500 focus:border-black block w-full"
-                          onMouseDown={(e) => e.preventDefault()}
-                        >
-                          <input
-                            type="checkbox"
-                            id={`obstacle-${item._id}`}
-                            value={item._id}
-                            checked={data.obstacles.includes(item._id)}
-                            onChange={() =>
-                              handleCheckboxChange(item._id, "obstacles")
-                            }
-                            className="mr-2"
-                          />
-                          <label
-                            htmlFor={`obstacle-${item._id}`}
-                            className="text-gray-900 text-sm"
-                          >
-                            {item.name}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
+            
 
               {/* Starting Stats */}
               <h2 className="font-bold ">Starting stats:</h2>
-              <div className="grid grid-cols-3 gap-5">
-                <div>
-                  <label
-                    htmlFor="starting_stats.heart_rate"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
-                  >
-                    Heart Rate
-                  </label>
-                  <input
-                    name="starting_stats.heart_rate"
-                    value={data.starting_stats.heart_rate}
-                    onChange={handleChange}
-                    type="number"
-                    id="starting_stats.heart_rate"
-                    className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black block w-full p-2.5"
-                    placeholder="Heart rate"
-                    required
-                  />
-                </div>
+              <div className="grid grid-cols-2 gap-5">
+              <div>
+                <label
+                  htmlFor="starting_stats.intial_heart_rate"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
+                >
+                 Initial Heart Rate
+                </label>
+                <input
+                  name="starting_stats.intial_heart_rate"
+                  value={data.starting_stats.intial_heart_rate}
+                  onChange={handleChange}
+                  type="number"
+                  id="starting_stats.intial_heart_rate"
+                  className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black block w-full p-2.5"
+                  placeholder="Heart rate"
+                  required
+                />
+              </div>
 
-                <div>
-                  <label
-                    htmlFor="starting_stats.kidney_rate"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
-                  >
-                    Kidney Rate
-                  </label>
-                  <input
-                    name="starting_stats.kidney_rate"
-                    value={data.starting_stats.kidney_rate}
-                    onChange={handleChange}
-                    type="number"
-                    id="starting_stats.kidney_rate"
-                    className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black block w-full p-2.5"
-                    placeholder="Kidney rate"
-                    required
-                  />
-                </div>
+              <div>
+                <label
+                  htmlFor="starting_stats.intial_kidney_rate"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
+                >
+                  Initial Kidney Rate
+                </label>
+                <input
+                  name="starting_stats.intial_kidney_rate"
+                  value={data.starting_stats.intial_kidney_rate}
+                  onChange={handleChange}
+                  type="number"
+                  id="starting_stats.intial_kidney_rate"
+                  className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black block w-full p-2.5"
+                  placeholder="Kidney rate"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="starting_stats.intial_suger_level"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
+                >
+                Initial Sugar level
+                </label>
+                <input
+                  name="starting_stats.intial_suger_level"
+                  value={data.starting_stats.intial_suger_level}
+                  onChange={handleChange}
+                  type="text"
+                  id="starting_stats.intial_suger_level"
+                  className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black block w-full p-2.5"
+                  placeholder="Sugar level"
+                  required
+                />
+              </div>
 
-                <div>
-                  <label
-                    htmlFor="starting_stats.weight"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
-                  >
-                    Weight
-                  </label>
-                  <input
-                    name="starting_stats.weight"
-                    value={data.starting_stats.weight}
-                    onChange={handleChange}
-                    type="number"
-                    id="starting_stats.weight"
-                    className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black block w-full p-2.5"
-                    placeholder="Weight"
-                    required
-                  />
-                </div>
+              <div>
+                <label
+                  htmlFor="starting_stats.intial_weight"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
+                >
+                  Initial intial_weight
+                </label>
+                <input
+                  name="starting_stats.intial_weight"
+                  value={data.starting_stats.intial_weight}
+                  onChange={handleChange}
+                  type="number"
+                  id="starting_stats.intial_weight"
+                  className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black block w-full p-2.5"
+                  placeholder="intial_weight"
+                  required
+                />
+              </div>
               </div>
               <div className="mt-6 flex justify-start">
                 <button

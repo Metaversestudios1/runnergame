@@ -11,9 +11,12 @@ import PrivateRoute from "./components/utils/PrivateRoute";
 import Obstacles from "./components/obstacle/Obstacles";
 import AddObstacle from "./components/obstacle/AddObstacle";
 import EditObstacle from "./components/obstacle/EditObstacle";
-import EditLevel from "./components/level/EditLevel";
-import AddLevel from "./components/level/AddLevel";
-import Levels from "./components/level/Levels";
+import EditInitialSetting from "./components/level/EditInitialSetting";
+import AddInitialSetting from "./components/level/AddInitialSetting";
+import InitialSetting from "./components/level/InitialSetting";
+import Impact from "./components/impact/Impact";
+import AddImpact from "./components/impact/AddImpact";
+import EditImpact from "./components/impact/EditImpact";
 
 function App() {
   return (
@@ -30,9 +33,12 @@ function App() {
               <Route path="/obstacles" element={<Obstacles />} />
               <Route path="/obstacles/addobstacle" element={<AddObstacle />} />
               <Route path="/obstacles/editobstacle/:id" element={<EditObstacle />} />
-              <Route path="/levels" element={<Levels />} />
-              <Route path="/levels/addlevel" element={<AddLevel />} />
-              <Route path="/levels/editlevel/:id" element={<EditLevel />} />
+              <Route path="/impact" element={<Impact />} />
+              <Route path="/impact/addimpact" element={<AddImpact />} />
+              <Route path="/impact/editimpact/:id" element={<EditImpact />} />
+              <Route path="/initialsetting" element={<InitialSetting />} />
+              <Route path="/initialsetting/addinitialsetting" element={<AddInitialSetting />} />
+              <Route path="/initialsetting/editinitialsetting/:id" element={<EditInitialSetting />} />
             </Route>
           </Route>
         </Routes>

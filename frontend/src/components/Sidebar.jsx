@@ -6,7 +6,8 @@ import { PiWarehouse } from "react-icons/pi";
 import { BsCollection } from "react-icons/bs";
 import { BiSolidTrafficBarrier } from "react-icons/bi";
 import { SiLevelsdotfyi } from "react-icons/si";
-
+import { RxCross2 } from "react-icons/rx";
+import { GiGooeyImpact } from "react-icons/gi";
 const Sidebar = ({ sidebar, toggleSideBar }) => {
   const [openSubMenu, setOpenSubMenu] = useState({
     client: false,
@@ -32,7 +33,7 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
 
     {/* Sidebar */}
     <div
-      className={`fixed top-0 left-0 z-50 h-full bg-white shadow-lg transition-transform duration-300 ease-in-out ${
+      className={`fixed top-0 left-0 z-50 h-full bg-white shadow-2xl transition-transform duration-300 ease-in-out ${
         sidebar ? "translate-x-0" : "-translate-x-full"
       }  md:translate-x-0 md:relative md:flex`}
     >
@@ -41,6 +42,9 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
           className={`w-[240px] bg-white hs-overlay   [--auto-close:lg] start-0 z-[60]  border-gray-200 pt-7 pb-10 overflow-y-auto sidebar
           }`}
         >
+        <div className="flex justify-end">
+        <RxCross2 className="md:hidden cursor-pointer mx-5 text-2xl " onClick={toggleSideBar}/>
+        </div>
           <div className="px-6">
             <a
               className="flex-none text-xl font-semibold "
@@ -125,7 +129,7 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
                 onClick={toggleSideBar}
               >
                 <NavLink
-                  to="/levels"
+                  to="/initialsetting"
                   className={({ isActive }) =>
                     isActive
                       ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
@@ -134,6 +138,23 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
                 >
                 <SiLevelsdotfyi className="text-lg"/>
                   <div className="text-sm">Levels</div>
+                </NavLink>
+              </li>
+              <li
+                className=" hover:scale-105 transition-transform duration-200 "
+                id="users-accordion "
+                onClick={toggleSideBar}
+              >
+                <NavLink
+                  to="/impact"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
+                      : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
+                  }
+                >
+                <GiGooeyImpact className="text-lg"/>
+                  <div className="text-sm">Impact</div>
                 </NavLink>
               </li>
               </ul>

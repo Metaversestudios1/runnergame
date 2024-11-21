@@ -112,10 +112,10 @@ const Levels = () => {
       />
 
       <div className="flex items-center">
-        <div className="text-2xl font-bold mx-2 my-8 px-4">Levels List</div>
+        <div className="text-2xl font-bold mx-2 my-8 px-4">Initial Setting</div>
       </div>
       <div className="flex justify-between">
-        <NavLink to="/levels/addlevel">
+        <NavLink to="/initialsetting/addinitialsetting">
           <button className="bg-[#16144b] text-white p-3 m-5 text-sm rounded-lg">
             Add New
           </button>
@@ -155,20 +155,18 @@ const Levels = () => {
                   Level number
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
-                  Heart rate
+                  Initial Heart rate
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
-                  Kidney rate
+                Initial Kidney rate
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
-                  weight
+                Initial weight
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
-                  obstacles
+                Initial sugar level
                 </th>
-                <th scope="col" className="px-6 py-3 border-2 border-gray-300">
-                  collectibles
-                </th>
+
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
                   Action
                 </th>
@@ -200,16 +198,13 @@ const Levels = () => {
                     </td>
                     <td className="px-6 py-4 border-2 border-gray-300">
                       {item?.starting_stats.weight}
-                    </td>
+                    </td>                     
                     <td className="px-6 py-4 border-2 border-gray-300">
-                      {item?.obstacles}
-                    </td>
-                    <td className="px-6 py-4 border-2 border-gray-300">
-                      {item?.collectibles}
-                    </td>
+                      {item?.starting_stats?.sugar_level}
+                    </td>                     
                     <td className=" p-5   border-2  border-gray-300">
                       <div className="flex items-center">
-                        <NavLink to={`/levels/editlevel/${item?._id}`}>
+                        <NavLink to={`/initialsetting/editinitialsetting/${item?._id}`}>
                           <CiEdit className="text-2xl cursor-pointer text-blue-900" />
                         </NavLink>
                       </div>
