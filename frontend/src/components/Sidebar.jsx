@@ -5,7 +5,7 @@ import { GrUserManager } from "react-icons/gr";
 import { PiWarehouse } from "react-icons/pi";
 import { BsCollection } from "react-icons/bs";
 import { BiSolidTrafficBarrier } from "react-icons/bi";
-import { SiLevelsdotfyi } from "react-icons/si";
+import { IoSettingsOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { GiGooeyImpact } from "react-icons/gi";
 const Sidebar = ({ sidebar, toggleSideBar }) => {
@@ -39,7 +39,7 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
     >
         <div
           id="docs-sidebar"
-          className={`w-[240px] bg-white hs-overlay   [--auto-close:lg] start-0 z-[60]  border-gray-200 pt-7 pb-10 overflow-y-auto sidebar
+          className={`w-[240px] bg-white hs-overlay h-full  [--auto-close:lg] start-0 z-[60]  border-gray-200 pt-7 pb-10 overflow-y-auto sidebar
           }`}
         >
         <div className="flex justify-end">
@@ -136,8 +136,8 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
                       : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
                   }
                 >
-                <SiLevelsdotfyi className="text-lg"/>
-                  <div className="text-sm">Levels</div>
+                <IoSettingsOutline className="text-lg"/>
+                  <div className="text-sm">Initial Setting</div>
                 </NavLink>
               </li>
               <li

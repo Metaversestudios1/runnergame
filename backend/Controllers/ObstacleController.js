@@ -1,18 +1,16 @@
-
-const obstacles = require('../Models/Obstacle');
-const bcrypt = require('bcrypt');
+const obstacles = require("../Models/Obstacle");
+const bcrypt = require("bcrypt");
 const path = require("path");
 const cloudinary = require("cloudinary").v2;
 
-
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-  });
-   
-  // Helper function to upload images
-  const uploadImage = (buffer, originalname, mimetype) => {
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Helper function to upload images
+const uploadImage = (buffer, originalname, mimetype) => {
   return new Promise((resolve, reject) => {
     if (!mimetype || typeof mimetype !== "string") {
       return reject(new Error("MIME type is required and must be a string"));
@@ -33,12 +31,17 @@ cloudinary.config({
     };
 
     // Direct upload using Cloudinary's upload_stream
-    const stream = cloudinary.uploader.upload_stream(options, (error, result) => {
-      if (error) {
-        return reject(new Error(`Cloudinary upload failed: ${error.message}`));
+    const stream = cloudinary.uploader.upload_stream(
+      options,
+      (error, result) => {
+        if (error) {
+          return reject(
+            new Error(`Cloudinary upload failed: ${error.message}`)
+          );
+        }
+        resolve(result);
       }
-      resolve(result);
-    });
+    );
 
     // Pipe the buffer to the stream
     const readableBuffer = Buffer.from(buffer);
@@ -50,18 +53,18 @@ const insertobstacles = async (req, res) => {
   try {
     // Create a new obstacle instance with the request body
     const newObstacle = new obstacles(req.body);
-   
+
     // Check if a photo file is provided in the request
     if (req.files && req.files["photo"] && req.files["photo"][0].buffer) {
       const photoFile = req.files["photo"][0];
-    
+
       // Upload the image using your helper function
       const uploadResult = await uploadImage(
         photoFile.buffer,
         photoFile.originalname,
         photoFile.mimetype
       );
-    
+
       // Assign photo details to the newObstacle document
       newObstacle.photo = {
         publicId: uploadResult.public_id,
@@ -96,7 +99,7 @@ const insertobstacles = async (req, res) => {
 };
 const updateobstacles = async (req, res) => {
   const { id } = req.body;
-  const dataString = req.body.data; 
+  const dataString = req.body.data;
   try {
     if (!id || !dataString) {
       return res.status(400).json({
@@ -126,7 +129,7 @@ const updateobstacles = async (req, res) => {
     const updatedObstacle = await obstacles.findOneAndUpdate(
       { _id: id },
       { $set: updateData },
-      { new: true, runValidators: true } 
+      { new: true, runValidators: true }
     );
     if (!updatedObstacle) {
       return res.status(404).json({
@@ -150,69 +153,76 @@ const updateobstacles = async (req, res) => {
   }
 };
 
+const getAllobstacles = async (req, res) => {
+  try {
+    const pageSize = parseInt(req.query.limit);
+    const page = parseInt(req.query.page);
+    const search = req.query.search;
 
-const getAllobstacles = async (req,res) => {
-    try{
-        const pageSize = parseInt(req.query.limit);
-        const page = parseInt(req.query.page);
-        const search = req.query.search;
+    const query = {
+      deleted_at: null,
+    };
+    if (search) {
+      query.type = { $regex: search, $options: "i" };
+    }
 
-        const query = {
-            deleted_at: null,
-        };
-        if (search) {
-            query.type = { $regex: search, $options: "i" };
-        }
+    const result = await obstacles
+      .find(query)
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
+    const count = await obstacles.find(query).countDocuments();
+    res.status(200).json({ success: true, result, count });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "error inserting obstacles" });
+  }
+};
+const getSingleobstacles = async (req, res) => {
+  const { id } = req.body;
+  try {
+    const result = await obstacles.findOne({ _id: id });
+    if (!result) {
+      return res
+        .status(404)
+        .json({ success: false, message: "obstacles not found" });
+    }
+    res.status(201).json({ success: true, result: result });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "error fetching obstacles" });
+  }
+};
 
-        const result = await obstacles.find(query)
-            .sort({ createdAt: -1 })
-            .skip((page - 1) * pageSize)
-            .limit(pageSize);
-        const count = await obstacles.find(query).countDocuments();
-        res.status(200).json({ success: true, result, count });
-
-    }catch(error){
-        res.status(500).json({success:false,message:"error inserting obstacles"});
-     }
-}
-const getSingleobstacles = async(req, res) => {
+const deleteobstacles = async (req, res) => {
+  try {
     const { id } = req.body;
-    try {
-
-        const result = await obstacles.findOne({ _id: id });
-        if (!result) {
-            res.status(404).json({ success: false, message: "obstacles not found" });
-        }
-        res.status(201).json({ success: true, result: result });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "error fetching obstacles" });
+    const result = await obstacles.findByIdAndUpdate(
+      id,
+      { deleted_at: new Date() },
+      { new: true }
+    );
+    if (!result) {
+      return res
+        .status(404)
+        .json({ success: false, message: "obstacles not found" });
     }
-}
-
-const deleteobstacles = async(req, res) => {
-    try{
-        const { id } = req.body;
-        const result = await obstacles.findByIdAndUpdate(
-            id,
-            { deleted_at:new Date()},
-            { new: true}
-        );
-        if (!result) {
-            return res.status(404).json({  success: false,message: "obstacles not found" });
-          }
-          res.status(200).json({
-            success: true,
-            data: result
-          });
-        
-    } catch (error) {
-        res.status(500).json({ success: false, message: "error fetching obstacles" });
-    }
-}  
-module.exports= {
-    insertobstacles,
-    updateobstacles,
-    getAllobstacles,
-    getSingleobstacles,
-    deleteobstacles,
-}
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "error fetching obstacles" });
+  }
+};
+module.exports = {
+  insertobstacles,
+  updateobstacles,
+  getAllobstacles,
+  getSingleobstacles,
+  deleteobstacles,
+};

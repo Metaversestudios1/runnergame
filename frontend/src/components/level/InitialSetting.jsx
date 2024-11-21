@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoMdEye } from "react-icons/io";
 const Levels = () => {
-  const [levels, setLevels] = useState([]);
+  const [initialSetting, setInitialSetting] = useState([]);
   const [noData, setNoData] = useState(false);
   const [loader, setLoader] = useState(true);
   const [page, setPage] = useState(1);
@@ -25,7 +25,7 @@ const Levels = () => {
       const res = await fetch(
         `${
           import.meta.env.VITE_BACKEND_URL
-        }/api/getAlllevel?page=${page}&limit=${pageSize}&search=${search}`
+        }/api/getAllinitiallevel?page=${page}&limit=${pageSize}&search=${search}`
       );
       const response = await res.json();
       console.log(response);
@@ -34,7 +34,7 @@ const Levels = () => {
         if (response.result.length === 0) {
           setNoData(true);
         }
-        setLevels(response.result);
+        setInitialSetting(response.result);
         setCount(response.count);
       }
     } catch (error) {
@@ -47,15 +47,15 @@ const Levels = () => {
   const handleDelete = async (e, id) => {
     e.preventDefault();
     const permissionOfDelete = window.confirm(
-      "Are you sure, you want to delete the employee"
+      "Are you sure, you want to delete the setting"
     );
     if (permissionOfDelete) {
-      let employeeOne = employees.length === 1;
+      let settingOne = initialSetting.length === 1;
       if (count === 1) {
-        employeeOne = false;
+        settingOne = false;
       }
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/deleteEmployee`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/deleteinitiallevel`,
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
@@ -67,7 +67,7 @@ const Levels = () => {
       }
       const response = await res.json();
       if (response.success) {
-        toast.success("Employee is deleted Successfully!", {
+        toast.success("Setting is deleted Successfully!", {
           position: "top-right",
           autoClose: 1000,
           hideProgressBar: false,
@@ -77,7 +77,7 @@ const Levels = () => {
           progress: undefined,
           theme: "light",
         });
-        if (employeeOne) {
+        if (settingOne) {
           setPage(page - 1);
         } else {
           fetchData();
@@ -143,7 +143,7 @@ const Levels = () => {
           </div>
         </div>
       )}
-      {levels.length !== 0 && (
+      {initialSetting.length !== 0 && (
         <div className="relative overflow-x-auto m-5 mb-0">
           <table className="w-full text-sm text-left rtl:text-right border-2 border-gray-300">
             <thead className="text-xs uppercase bg-gray-200">
@@ -174,7 +174,7 @@ const Levels = () => {
             </thead>
 
             <tbody>
-              {levels.map((item, index) => {
+              {initialSetting.map((item, index) => {
                 return (
                   <tr className="bg-white">
                     <th
@@ -191,22 +191,24 @@ const Levels = () => {
                       {item?.level_number}
                     </th>
                     <td className="px-6 py-4 border-2 border-gray-300">
-                      {item?.starting_stats.heart_rate}
+                      {item?.starting_stats?.initial_heart_rate}
                     </td>
                     <td className="px-6 py-4 border-2 border-gray-300">
-                      {item?.starting_stats.kidney_rate}
+                      {item?.starting_stats?.initial_kidney_rate}
                     </td>
                     <td className="px-6 py-4 border-2 border-gray-300">
-                      {item?.starting_stats.weight}
+                      {item?.starting_stats?.initial_weight}
                     </td>                     
                     <td className="px-6 py-4 border-2 border-gray-300">
-                      {item?.starting_stats?.sugar_level}
+                      {item?.starting_stats?.initial_sugar_level}
                     </td>                     
                     <td className=" p-5   border-2  border-gray-300">
                       <div className="flex items-center">
                         <NavLink to={`/initialsetting/editinitialsetting/${item?._id}`}>
                           <CiEdit className="text-2xl cursor-pointer text-blue-900" />
                         </NavLink>
+                        
+                          <MdDelete onClick={(e)=>{handleDelete(e, item._id)}} className="text-2xl cursor-pointer text-blue-900" />
                       </div>
                     </td>
                   </tr>
@@ -219,10 +221,10 @@ const Levels = () => {
 
       {noData && (
         <div className="text-center text-xl">
-          Currently! There are no Levels in the storage.
+          Currently! There are no setting in the storage.
         </div>
       )}
-      {levels.length !== 0 && (
+      {initialSetting.length !== 0 && (
         <div className="flex flex-col items-center my-10">
             <span className="text-sm text-black">
             Showing{" "}
@@ -245,7 +247,7 @@ const Levels = () => {
               className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900"
               onClick={() => setPage(page + 1)}
               disabled={
-                levels.length < pageSize || startIndex + pageSize >= count
+                initialSetting.length < pageSize || startIndex + pageSize >= count
               }
             >
               Next

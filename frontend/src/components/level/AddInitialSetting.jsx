@@ -7,46 +7,16 @@ import { FaAngleDown } from "react-icons/fa6";
 import $ from "jquery-validation"
 const AddLevel = () => {
   const [loader, setLoader] = useState(false);
-  const [error, setError] = useState("");
-  const [collectibles, setCollectibles] = useState([]);
-  const [obstacles, setObstacles] = useState([]);
-  const [dropdownCollectiblesOpen, setDropdownCollectiblesOpen] = useState(false);
-  const [dropdownObstaclesOpen, setDropdownObstaclesOpen] = useState(false);
-
-  const dropdownCollectiblesRef = useRef(null);
-  const dropdownObstaclesRef = useRef(null);
 
   const navigate = useNavigate();
 
   const initialState = {
     level_number: "",
-    starting_stats: { intial_heart_rate: "", intial_kidney_rate: "", intial_weight: "" , intial_suger_level:""},
+    starting_stats: { initial_heart_rate: "", initial_kidney_rate: "", initial_weight: "" , initial_sugar_level:""},
 
   };
 
   const [data, setData] = useState(initialState);
-
-  useEffect(() => {
-    fetchCollectables();
-    fetchObstacles();
-  }, []);
-
-  const fetchCollectables = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getAllCollectible`);
-    const response = await res.json();
-    if (response.success) {
-      setCollectibles(response.result);
-    }
-  };
-
-  const fetchObstacles = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getAllobstacles`);
-    const response = await res.json();
-    if (response.success) {
-      setObstacles(response.result);
-    }
-  };
-
   const validatelevelform = () => {
     // Initialize jQuery validation
     $("#levelform").validate({
@@ -57,12 +27,6 @@ const AddLevel = () => {
         starting_stats: {
           required: true,
         },
-        obstacles: {
-          required: true,
-        },
-        collectibles: {
-          required: true,
-        },
       },
       messages: {
         level_number: {
@@ -70,12 +34,6 @@ const AddLevel = () => {
         },
         starting_stats: {
           required: "Please enter starting stats",
-        },
-        obstacles: {
-          required: "select obstacles",
-        },
-        collectibles: {
-          required: "select collecetibles",
         },
       },
       errorElement: "div",
@@ -123,15 +81,16 @@ const AddLevel = () => {
 
     try {
       setLoader(true);
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/insertlevel`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/insertinitiallevel`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
 
       const response = await res.json();
+      console.log(response)
       if (response.success) {
-        toast.success("New Level is added Successfully!", {
+        toast.success("Setting is added Successfully!", {
           position: "top-right",
           autoClose: 1000,
           hideProgressBar: false,
@@ -143,7 +102,7 @@ const AddLevel = () => {
         });
 
         setTimeout(() => {
-          navigate("/levels");
+          navigate("/initialsetting");
         }, 1500);
       } else {
         setLoader(false);
@@ -158,30 +117,7 @@ const AddLevel = () => {
     navigate(-1);
   };
 
-  const handleCheckboxChange = (id, field) => {
-    setData((prevState) => {
-      const updatedField = prevState[field];
 
-      if (updatedField.includes(id)) {
-        return {
-          ...prevState,
-          [field]: updatedField.filter((item) => item !== id),
-        };
-      } else {
-        return {
-          ...prevState,
-          [field]: [...updatedField, id],
-        };
-      }
-    });
-  };
-
-  const handleDropdownBlur = (event, field) => {
-    const dropdownRef = field === "collectibles" ? dropdownCollectiblesRef : dropdownObstaclesRef;
-    if (!dropdownRef.current.contains(event.relatedTarget)) {
-      field === "collectibles" ? setDropdownCollectiblesOpen(false) : setDropdownObstaclesOpen(false);
-    }
-  };
 
   return (
     <>
@@ -250,17 +186,17 @@ const AddLevel = () => {
               <div className="grid grid-cols-2 gap-5">
               <div>
                 <label
-                  htmlFor="starting_stats.intial_heart_rate"
+                  htmlFor="starting_stats.initial_heart_rate"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
                 >
                  Initial Heart Rate
                 </label>
                 <input
-                  name="starting_stats.intial_heart_rate"
-                  value={data.starting_stats.intial_heart_rate}
+                  name="starting_stats.initial_heart_rate"
+                  value={data.starting_stats.initial_heart_rate}
                   onChange={handleChange}
                   type="number"
-                  id="starting_stats.intial_heart_rate"
+                  id="starting_stats.initial_heart_rate"
                   className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black block w-full p-2.5"
                   placeholder="Heart rate"
                   required
@@ -269,17 +205,17 @@ const AddLevel = () => {
 
               <div>
                 <label
-                  htmlFor="starting_stats.intial_kidney_rate"
+                  htmlFor="starting_stats.initial_kidney_rate"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
                 >
                   Initial Kidney Rate
                 </label>
                 <input
-                  name="starting_stats.intial_kidney_rate"
-                  value={data.starting_stats.intial_kidney_rate}
+                  name="starting_stats.initial_kidney_rate"
+                  value={data.starting_stats.initial_kidney_rate}
                   onChange={handleChange}
                   type="number"
-                  id="starting_stats.intial_kidney_rate"
+                  id="starting_stats.initial_kidney_rate"
                   className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black block w-full p-2.5"
                   placeholder="Kidney rate"
                   required
@@ -287,17 +223,17 @@ const AddLevel = () => {
               </div>
               <div>
                 <label
-                  htmlFor="starting_stats.intial_suger_level"
+                  htmlFor="starting_stats.initial_sugar_level"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
                 >
                 Initial Sugar level
                 </label>
                 <input
-                  name="starting_stats.intial_suger_level"
-                  value={data.starting_stats.intial_suger_level}
+                  name="starting_stats.initial_sugar_level"
+                  value={data.starting_stats.initial_sugar_level}
                   onChange={handleChange}
                   type="text"
-                  id="starting_stats.intial_suger_level"
+                  id="starting_stats.initial_sugar_level"
                   className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black block w-full p-2.5"
                   placeholder="Sugar level"
                   required
@@ -306,19 +242,19 @@ const AddLevel = () => {
 
               <div>
                 <label
-                  htmlFor="starting_stats.intial_weight"
+                  htmlFor="starting_stats.initial_weight"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
                 >
-                  Initial intial_weight
+                  Initial Weight
                 </label>
                 <input
-                  name="starting_stats.intial_weight"
-                  value={data.starting_stats.intial_weight}
+                  name="starting_stats.initial_weight"
+                  value={data.starting_stats.initial_weight}
                   onChange={handleChange}
                   type="number"
-                  id="starting_stats.intial_weight"
+                  id="starting_stats.initial_weight"
                   className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black block w-full p-2.5"
-                  placeholder="intial_weight"
+                  placeholder="initial_weight"
                   required
                 />
               </div>

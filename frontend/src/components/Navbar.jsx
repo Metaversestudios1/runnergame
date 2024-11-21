@@ -111,6 +111,7 @@ const Navbar = ({ toggleSideBar }) => {
               </svg>
             </button>
           </div>
+          <div className="text-lg text-white px-3">Dashboard</div>
         </div>
 
         <div
