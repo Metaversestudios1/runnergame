@@ -725,7 +725,7 @@ function Graph() {
 
   return (
     <div className='flex w-full'>
-      <div className=" h-screen flex-grow overflow-x-hidden overflow-auto flex flex-wrap content-start p-2">   
+      <div className=" h-screen flex-grow  flex flex-wrap content-start p-2">   
       
       {employeeData.map(
         ({

@@ -15,16 +15,16 @@ const insertimpact = async (req, res) => {
 };
 
   const updateimpact = async (req, res) => {
-    const { id, oldData } = req.body;
+    const { id, data } = req.body;
 
     try {
-        if (!id || !oldData) {
+        if (!id || !data) {
             return res.status(400).json({ success: false, message: "ID and update data are required" });
         }
 
         const result = await impact.updateOne(
             { _id: id },
-            { $set: oldData } // Ensure oldData contains only fields to be updated
+            { $set: data } // Ensure oldData contains only fields to be updated
         );
 
         if (result.nModified === 0) {

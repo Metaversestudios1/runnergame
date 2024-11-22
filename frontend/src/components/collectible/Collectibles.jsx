@@ -47,15 +47,15 @@ console.log(response)
     const handleDelete = async (e, id) => {
       e.preventDefault();
       const permissionOfDelete = window.confirm(
-        "Are you sure, you want to delete the employee"
+        "Are you sure, you want to delete the Collectibles"
       );
       if (permissionOfDelete) {
-        let employeeOne = employees.length === 1;
+        let collectibleOne = collectibles.length === 1;
         if (count === 1) {
-          employeeOne = false;
+          collectibleOne = false;
         }
         const res = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/api/deleteEmployee`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/deleteCollectible`,
           {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
@@ -67,7 +67,7 @@ console.log(response)
         }
         const response = await res.json();
         if (response.success) {
-          toast.success("Employee is deleted Successfully!", {
+          toast.success("Collectible is deleted Successfully!", {
             position: "top-right",
             autoClose: 1000,
             hideProgressBar: false,
@@ -77,7 +77,7 @@ console.log(response)
             progress: undefined,
             theme: "light",
           });
-          if (employeeOne) {
+          if (collectibleOne) {
             setPage(page - 1);
           } else {
             fetchData();
@@ -204,6 +204,7 @@ console.log(response)
                         <NavLink to={`/collectibles/editcollectible/${item?._id}`}>
                           <CiEdit className="text-2xl cursor-pointer text-blue-900" />
                         </NavLink>
+                        <MdDelete onClick={(e)=>{handleDelete(e, item._id)}} className="text-2xl cursor-pointer text-blue-900" />
                       </div>
                     </td>
                   </tr>

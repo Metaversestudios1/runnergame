@@ -10,21 +10,17 @@ const Layout = ({ children }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen overflow-hidden">
       {/* Navbar at the top */}
       <Navbar toggleSideBar={toggleSideBar} />
 
       {/* Sidebar and Content */}
-      <div className="flex flex-1">
-        {/* Sidebar occupying 2/10th of the width */}
-        <Sidebar
-          sidebar={sideBar}
-          toggleSideBar={toggleSideBar}
-         
-        />
+      <div className="flex flex-1 h-full">
+        {/* Sidebar */}
+        <Sidebar sidebar={sideBar} toggleSideBar={toggleSideBar} />
 
-        {/* Main Content (Outlet) taking the rest */}
-        <div className="flex-grow p-4 overflow-y-auto">
+        {/* Main Content (Outlet) */}
+        <div className="flex-grow p-4 bg-gray-100 overflow-auto">
           <Outlet />
         </div>
       </div>
