@@ -1,5 +1,5 @@
 import React from 'react';
-const { useState } = React;
+const {useEffect, useState } = React;
 import { LineChart, Line, XAxis, YAxis, Tooltip,  CartesianGrid, ResponsiveContainer } from 'recharts';
 import { useSpring, animated, config } from '@react-spring/web';
 import HomeIcon from '@mui/icons-material/Home'; 
@@ -7,7 +7,6 @@ import Icon from "@mui/material/Icon"; // For generic icons or custom icons
  // Correct import for a specific icon
 import clsx from "https://cdn.skypack.dev/clsx@1.1.1";
 import "../Dashboard.css";
-
 const map = (value, sMin, sMax, dMin, dMax) => {
   return dMin + ((value - sMin) / (sMax - sMin)) * (dMax - dMin);
 };
@@ -27,36 +26,6 @@ const segmentationData = [
   { c1: 'Other', c2: '126', c3: '#334ed8', color: '#2c3051' },
 ];
 
-// Other code remains the same
-const employeeData = [
-  {
-    id: 1,
-    name: 'Esther Howard',
-    position: "Sale's manager USA",
-    transactions: 3490,
-    rise: true,
-    tasksCompleted: 3,
-    imgId: 0,
-  },
-  {
-    id: 2,
-    name: 'Eleanor Pena',
-    position: "Sale's manager Europe",
-    transactions: 590,
-    rise: false,
-    tasksCompleted: 5,
-    imgId: 2,
-  },
-  {
-    id: 3,
-    name: 'Robert Fox',
-    position: "Sale's manager Asia",
-    transactions: 2600,
-    rise: true,
-    tasksCompleted: 1,
-    imgId: 3,
-  },
-];
 
 
 const graphData = [
@@ -87,163 +56,6 @@ function Image({ path = '1', className = 'w-4 h-4' }) {
       alt=""
       className={clsx(className, 'rounded-full')}
     />
-  );
-}
-
-
-function NameCard({
-  name,
-  position,
-  transactionAmount,
-  rise,
-  tasksCompleted,
-  imgId,
-}) {
-  const { transactions, barPlayhead } = useSpring({
-    transactions: transactionAmount,
-    barPlayhead: 1,
-    from: { transactions: 0, barPlayhead: 0 },
-  });
-
-
-
-  
-  function Graph() {
-    const CustomTooltip = () => (
-      <div className="rounded-xl overflow-hidden tooltip-head">
-        <div className="flex items-center justify-between p-2">
-          <div className="">Revenue</div>
-          <Icon path="res-react-dash-options" className="w-2 h-2" />
-        </div>
-        <div className="tooltip-body text-center p-3">
-          <div className="text-black font-bold">$1300.50</div>
-          <div className="">Revenue from 230 sales</div>
-        </div>
-      </div>
-    );
-    return (
-      <div className="flex p-4 h-full flex-col">
-        <div className="">
-          <div className="flex items-center">
-            <div className="font-bold text-black">Your Work Summary</div>
-            <div className="flex-grow" />
-  
-            <Icon path="res-react-dash-graph-range" className="w-4 h-4" />
-            <div className="ml-2">Last 9 Months</div>
-            <div className="ml-6 w-5 h-5 flex justify-center items-center rounded-full icon-background">
-              ?
-            </div>
-          </div>
-          <div className="font-bold ml-5">Nov - July</div>
-        </div>
-  
-        <div className="flex-grow">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart width={500} height={300} data={graphData}>
-              <defs>
-                <linearGradient id="paint0_linear" x1="0" y1="0" x2="1" y2="0">
-                  <stop stopColor="#6B8DE3" />
-                  <stop offset="1" stopColor="#7D1C8D" />
-                </linearGradient>
-              </defs>
-              <CartesianGrid
-                horizontal={false}
-                strokeWidth="6"
-                stroke="#252525"
-              />
-              <XAxis
-                dataKey="name"
-                axisLine={false}
-                tickLine={false}
-                tickMargin={10}
-              />
-              <YAxis axisLine={false} tickLine={false} tickMargin={10} />
-              <Tooltip content={<CustomTooltip />} cursor={false} />
-              <Line
-                activeDot={false}
-                type="monotone"
-                dataKey="expectedRevenue"
-                stroke="#242424"
-                strokeWidth="3"
-                dot={false}
-                strokeDasharray="8 8"
-              />
-              <Line
-                type="monotone"
-                dataKey="revenue"
-                stroke="url(#paint0_linear)"
-                strokeWidth="4"
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-    );
-  }
-
-
- 
-
-  
-  return (
-    <div className="w-full p-2 lg:w-1/3">
-      <div className="rounded-lg bg-card flex left p-3 h-32">
-        <div className="">
-          <div className="flex items-center">
-            <Image path={`mock_faces_${imgId}`} className="w-10 h-10" />
-            <div className="ml-2">
-              <div className="flex items-center">
-                <div className="mr-2 font-bold text-black">{name}</div>
-                <HomeIcon className="w-8 h-8" />  {/* Use the specific icon */}
-              </div>
-              <div className="text-sm ">{position}</div>
-            </div>
-          </div>
-
-          <div className="text-sm  mt-2">{`${tasksCompleted} from 5 tasks completed`}</div>
-          <svg
-            className="w-44 mt-3"
-            height="6"
-            viewBox="0 0 200 6"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect width="200" height="6" rx="3" fill="#2D2D2D" />
-            <animated.rect
-              width={barPlayhead.interpolate(
-                (i) => i * (tasksCompleted / 5) * 200,
-              )}
-              height="6"
-              rx="3"
-              fill="url(#paint0_linear)"
-            />
-            <rect x="38" width="2" height="6" fill="#171717" />
-            <rect x="78" width="2" height="6" fill="#171717" />
-            <rect x="118" width="2" height="6" fill="#171717" />
-            <rect x="158" width="2" height="6" fill="#171717" />
-            <defs>
-              <linearGradient id="paint0_linear" x1="0" y1="0" x2="1" y2="0">
-                <stop stopColor="#8E76EF" />
-                <stop offset="1" stopColor="#3912D2" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-        <div className="flex flex-col items-center">
-          <animated.div
-            className={clsx(
-              rise ? 'text-green-500' : 'text-red-500',
-              'font-bold',
-              'text-lg',
-            )}
-          >
-            {transactions.interpolate((i) => `$${i.toFixed(2)}`)}
-          </animated.div>
-          <div className="text-sm ">Last 6 month</div>
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -669,6 +481,248 @@ function TopCountries() {
 
 
 const Home = () => {
+const [totalUser, setTotalUser] = useState(null);
+const [totalcollectible, setTotalcollectible] = useState(null);
+const [totalobstacles, setTotalobstacles] = useState(null);
+
+useEffect(() => {
+    // console.log(userInfo);
+  // Execute all fetch requests in parallel and only hide loader when all of them are done.
+  Promise.all([
+    fetchuserCount(),
+    fetchcollectibleCount(),
+    fetchobstclesCount(),
+  ]).finally(() => {
+   // setLoader(false);
+  });
+}, []);
+const fetchuserCount = async () => {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getusercount`);
+    if (!res) {
+      throw new Error("Failed to fetch user count");
+    }
+    const response = await res.json();
+   // alert(response.count)
+    setTotalUser(response.count);
+  } catch (error) {
+    console.error("Error fetching user count:", error);
+    setTotalUser(0); // Fallback to 0 if fetch fails
+  }
+};
+const fetchcollectibleCount = async () => {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getcollectibelcount`);
+    if (!res) {
+      throw new Error("Failed to fetch user count");
+    }
+    const response = await res.json();
+   // alert(response.count)
+    setTotalUser(response.count);
+  } catch (error) {
+    console.error("Error fetching user count:", error);
+    setTotalUser(0); // Fallback to 0 if fetch fails
+  }
+};
+const fetchobstclesCount = async () => {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getobstaclescount`);
+    if (!res) {
+      throw new Error("Failed to fetch user count");
+    }
+    const response = await res.json();
+   // alert(response.count)
+    setTotalUser(response.count);
+  } catch (error) {
+    console.error("Error fetching user count:", error);
+    setTotalUser(0); // Fallback to 0 if fetch fails
+  }
+};
+
+// Other code remains the same
+const employeeData = [
+  {
+    id: 1,
+    name: 'Total User',
+    position: `Runner ${totalUser}`,
+  transactions: '',
+    rise: true,
+    // tasksCompleted: 3,
+    imgId: 0,
+  },
+  {
+    id: 2,
+    name: 'Total Collectibles',
+    position: `Runner ${totalcollectible}`,
+    transactions: 590,
+    rise: false,
+    tasksCompleted: 5,
+    imgId: 2,
+  },
+  {
+    id: 3,
+    name: 'Total Obstacles',
+    position: `Runner ${totalobstacles}`,
+    transactions: 2600,
+    rise: true,
+    tasksCompleted: 1,
+    imgId: 3,
+  },
+];
+
+
+
+function NameCard({
+  name,
+  position,
+  transactionAmount,
+  rise,
+  tasksCompleted,
+  imgId,
+}) {
+  const { transactions, barPlayhead } = useSpring({
+    transactions: transactionAmount,
+    barPlayhead: 1,
+    from: { transactions: 0, barPlayhead: 0 },
+  });
+
+  
+  return (
+    <div className="w-full p-2 lg:w-1/3">
+      <div className="rounded-lg bg-card flex left p-3 h-32">
+        <div className="">
+          <div className="flex items-center">
+            <Image path={`mock_faces_${imgId}`} className="w-10 h-10" />
+            <div className="ml-2">
+              <div className="flex items-center">
+                <div className="mr-2 font-bold text-black">{name}</div>
+                <HomeIcon className="w-8 h-8" />  {/* Use the specific icon */}
+              </div>
+              <div className="text-sm ">{position}</div>
+            </div>
+          </div>
+
+          {/* <div className="text-sm  mt-2">{`${tasksCompleted} from 5 tasks completed`}</div> */}
+          <svg
+            className="w-44 mt-3"
+            height="6"
+            viewBox="0 0 200 6"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="200" height="6" rx="3" fill="#2D2D2D" />
+            <animated.rect
+              width={barPlayhead.interpolate(
+                (i) => i * (tasksCompleted / 5) * 200,
+              )}
+              height="6"
+              rx="3"
+              fill="url(#paint0_linear)"
+            />
+            <rect x="38" width="2" height="6" fill="#171717" />
+            <rect x="78" width="2" height="6" fill="#171717" />
+            <rect x="118" width="2" height="6" fill="#171717" />
+            <rect x="158" width="2" height="6" fill="#171717" />
+            <defs>
+              <linearGradient id="paint0_linear" x1="0" y1="0" x2="1" y2="0">
+                <stop stopColor="#8E76EF" />
+                <stop offset="1" stopColor="#3912D2" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div className="flex flex-col items-center">
+          <animated.div
+            className={clsx(
+              rise ? 'text-green-500' : 'text-red-500',
+              'font-bold',
+              'text-lg',
+            )}
+          >
+         </animated.div>
+          {/* <div className="text-sm ">Last 6 month</div> */}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+  
+function Graph() {
+  const CustomTooltip = () => (
+    <div className="rounded-xl overflow-hidden tooltip-head">
+      <div className="flex items-center justify-between p-2">
+        <div className="">Revenue</div>
+        <Icon path="res-react-dash-options" className="w-2 h-2" />
+      </div>
+      <div className="tooltip-body text-center p-3">
+        <div className="text-black font-bold">$1300.50</div>
+        <div className="">Revenue from 230 sales</div>
+      </div>
+    </div>
+  );
+  return (
+    <div className="flex p-4 h-full flex-col">
+      <div className="">
+        <div className="flex items-center">
+          <div className="font-bold text-black">Your Work Summary</div>
+          <div className="flex-grow" />
+
+          <Icon path="res-react-dash-graph-range" className="w-4 h-4" />
+          <div className="ml-2">Last 9 Months</div>
+          <div className="ml-6 w-5 h-5 flex justify-center items-center rounded-full icon-background">
+            ?
+          </div>
+        </div>
+        <div className="font-bold ml-5">Nov - July</div>
+      </div>
+
+      <div className="flex-grow">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart width={500} height={300} data={graphData}>
+            <defs>
+              <linearGradient id="paint0_linear" x1="0" y1="0" x2="1" y2="0">
+                <stop stopColor="#6B8DE3" />
+                <stop offset="1" stopColor="#7D1C8D" />
+              </linearGradient>
+            </defs>
+            <CartesianGrid
+              horizontal={false}
+              strokeWidth="6"
+              stroke="#252525"
+            />
+            <XAxis
+              dataKey="name"
+              axisLine={false}
+              tickLine={false}
+              tickMargin={10}
+            />
+            <YAxis axisLine={false} tickLine={false} tickMargin={10} />
+            <Tooltip content={<CustomTooltip />} cursor={false} />
+            <Line
+              activeDot={false}
+              type="monotone"
+              dataKey="expectedRevenue"
+              stroke="#242424"
+              strokeWidth="3"
+              dot={false}
+              strokeDasharray="8 8"
+            />
+            <Line
+              type="monotone"
+              dataKey="revenue"
+              stroke="url(#paint0_linear)"
+              strokeWidth="4"
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
   return (
     <div className='flex w-full'>
       <div className=" h-screen flex-grow overflow-x-hidden overflow-auto flex flex-wrap content-start p-2">   

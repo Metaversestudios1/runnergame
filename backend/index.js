@@ -19,6 +19,7 @@ const CollectibleRoute = require("./Routes/CollectibleRoute");
 const GameSessionRoute = require("./Routes/GameSessionRoute");
 const AchievmentRoute = require("./Routes/AchievmentRoute");
 const ImpactRoute = require("./Routes/ImpactRoute");
+const DashboardRoutes = require("./Routes/DashboardRoutes");
 
 // Connect to the database
 connectDB();
@@ -59,6 +60,7 @@ app.use("/api", CollectibleRoute);
 app.use("/api", GameSessionRoute);
 app.use("/api", AchievmentRoute);
 app.use("/api", ImpactRoute);
+app.use("/api", DashboardRoutes);
 
 
 
