@@ -149,72 +149,81 @@ const insertuser = async (req, res) => {
   const { password, promocode, ...userData } = req.body;
 
   try {
-    // Check for required fields: password and either email or contact
+    // Validate required fields
     if (!password || (!userData.email && !userData.contact)) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
-        message:
-          "Please provide all required fields: password and either email or contact.",
+        message: "Please provide password and either email or contact.",
       });
     }
 
-    // Password length validation
+    // Validate password length
     if (password.length < 4) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
-        message: "Password must contain a minimum of 4 digits",
+        message: "Password must contain a minimum of 4 characters.",
       });
     }
 
+    // Check if user already exists by email or contact
     const query = {};
     if (userData.email) query.email = userData.email;
     if (userData.contact) query.contact = userData.contact;
 
     const existingUser = await User.findOne(query);
 
-    // Check for existing user by email or contact
-    // const existingUser = await User.findOne({
-    //   $or: [{ email: userData.email }, { contact: userData.contact }],
-    // });
-
     if (existingUser) {
-      // Update existing user's fields
-      const salt = await bcrypt.genSalt(10);
-      existingUser.password = await bcrypt.hash(password, salt); // Hash the password
-      existingUser.currency = userData.currency || existingUser.currency; // Update currency if provided
-      let uniqueUId;
-      let isUnique = false;
-
-      while (!isUnique) {
-        uniqueUId = `T${Math.floor(10000 + Math.random() * 90000)}`; // Generates a string like 'T12345'
-        const existingId = await User.findOne({ user_id: uniqueUId });
-        if (!existingId) {
-          isUnique = true; // If no existing user has this u_id, we can use it
-        }
-      }
-      existingUser.user_id = uniqueUId; // Set the unique u_id
-
-      // if (promocode) {
-      existingUser.promocode = `PROMO_${existingUser.user_id
-        .toString()
-        .slice(0, 4)
-        .toUpperCase()}`; // Adjust as necessary
-      await existingUser.save(); // Save updated user record
-      return res
-        .status(200)
-        .json({ success: true, message: "User register successfully" });
+      return res.status(409).json({
+        success: false,
+        message: "User already exists with the provided email or contact.",
+      });
     }
 
-    // If no existing user found, respond with an error
-    return res.status(404).json({ success: false, message: "User not found" });
+    // Create a new user
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Generate a unique user ID
+    let uniqueUserId;
+    let isUnique = false;
+    while (!isUnique) {
+      uniqueUserId = `T${Math.floor(10000 + Math.random() * 90000)}`;
+      const existingId = await User.findOne({ user_id: uniqueUserId });
+      if (!existingId) {
+        isUnique = true;
+      }
+    }
+
+    // Set promocode if not provided
+    const generatedPromocode = `PROMO_${uniqueUserId.slice(0, 4).toUpperCase()}`;
+
+    // Create new user data
+    const newUser = new User({
+      ...userData,
+      password: hashedPassword,
+      user_id: uniqueUserId,
+      promocode: promocode || generatedPromocode,
+    });
+
+    await newUser.save();
+
+    return res.status(201).json({
+      success: true,
+      message: "User registered successfully.",
+      data: { user_id: newUser.user_id, promocode: newUser.promocode },
+    });
   } catch (err) {
+    console.error("Error registering user:", err.message);
     res.status(500).json({
       success: false,
-      message: "Error registration user",
+      message: "Error registering user.",
       error: err.message,
     });
   }
 };
+
+module.exports = { insertuser };
+
 
 const updateuser = async (req, res) => {
   const updatedata = req.body;

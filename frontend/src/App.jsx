@@ -17,6 +17,7 @@ import InitialSetting from "./components/level/InitialSetting";
 import Impact from "./components/impact/Impact";
 import AddImpact from "./components/impact/AddImpact";
 import EditImpact from "./components/impact/EditImpact";
+import Players from "./components/player/Players";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
               <Route path="/initialsetting" element={<InitialSetting />} />
               <Route path="/initialsetting/addinitialsetting" element={<AddInitialSetting />} />
               <Route path="/initialsetting/editinitialsetting/:id" element={<EditInitialSetting />} />
+              <Route path="/players" element={<Players />} />
             </Route>
           </Route>
         </Routes>

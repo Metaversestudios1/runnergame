@@ -6,20 +6,10 @@ const connectDB = require("./config/db");
 const PORT = process.env.PORT || 8000;
 
 // Import your routes
-const GameRoutes = require("./Routes/GameRoutes");
 const AdminRoute = require("./Routes/AdminRoute");
 const UserRoute = require("./Routes/UserRoute");
-const SettingRoutes = require("./Routes/SettingRoutes");
 
-const PlayerRoutes = require("./Routes/PlayerRoutes");
-const LevelRoute = require("./Routes/LevelRoute");
-const InitialLevelRoute = require("./Routes/InitialLevelRoute");
-const ObstacleRoute = require("./Routes/ObstacleRoute");
-const CollectibleRoute = require("./Routes/CollectibleRoute");
-const GameSessionRoute = require("./Routes/GameSessionRoute");
-const AchievmentRoute = require("./Routes/AchievmentRoute");
-const ImpactRoute = require("./Routes/ImpactRoute");
-const DashboardRoutes = require("./Routes/DashboardRoutes");
+const GameStateAndProgressRoutes = require("./Routes/GameStateAndProgressRoutes");
 
 // Connect to the database
 connectDB();
@@ -49,18 +39,10 @@ app.use(express.urlencoded({ extended: true })); // For parsing application/x-ww
 
 // Use your routes
 // app.use('/api', GameRoutes(io));
+
+app.use("/api", GameStateAndProgressRoutes);
 app.use("/api", UserRoute);
 app.use("/api", AdminRoute);
-app.use("/api", SettingRoutes);
-app.use("/api", PlayerRoutes);
-app.use("/api", LevelRoute);
-app.use("/api", InitialLevelRoute);
-app.use("/api", ObstacleRoute);
-app.use("/api", CollectibleRoute);
-app.use("/api", GameSessionRoute);
-app.use("/api", AchievmentRoute);
-app.use("/api", ImpactRoute);
-app.use("/api", DashboardRoutes);
 
 
 
