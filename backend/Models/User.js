@@ -2,42 +2,51 @@ const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema(
   {
+    userId: {
+      type: Number,
+      autoIncrement: true, // This will require a counter collection for sequence generation
+    },
     username: {
       type: String,
-    },
-    user_id: {
-      type: String,
-    },
-    contact: { type: String },
-    password: {
-      type: String,
-    },
+       },
     email: {
       type: String,
-      unique: true,
-    },
-    current_level: {
+     },
+    password: {
+      type: String,
+     },
+    highScore: {
       type: Number,
+      default: 0,
     },
-    current_stats: {
-      heart_rate: { type: Number },
-      kidney_rate: { type: Number },
-      weight: { type: Number },
+    coins: {
+      type: Number,
+      default: 0,
     },
-    achievements: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "Achievement" },
-    ],
-    health_history: { type: String },
+    avatar: {
+      type: String,
+      default: "default.png",
+    },
+    achievements: {
+      type: Array, // Can store any JSON-like structure
+      default: [],
+    },
     status: {
       type: Number,
-      default: 1, // Tinyint equivalent
+      default: 1, // Equivalent to Tinyint
     },
+    createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
     deleted_at: {
       type: Date,
       default: null,
     },
   },
-  { timestamps: true, collection: "user" }
+  { 
+    timestamps: true, 
+    collection: "user" 
+  }
 );
 
+// Export the schema
 module.exports = mongoose.model("user", UserSchema);
