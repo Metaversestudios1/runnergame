@@ -14,12 +14,15 @@ const register = async (req, res) => {
         .status(400)
         .json({success: false, message: "Username or email already exists" });
     }
+    const lastUser = await User.findOne().sort({ userId: -1 }); // Sort by userId in descending order
+    const userId = lastUser.userId ? lastUser.userId + 1 : 1; //
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user
     const newUser = new User({
+      userId,
       username,
       password: hashedPassword,
       email,
