@@ -10,6 +10,10 @@ const AdminRoute = require("./Routes/AdminRoute");
 const UserRoute = require("./Routes/UserRoute");
 
 const GameStateAndProgressRoutes = require("./Routes/GameStateAndProgressRoutes");
+const LeaderBoardRoute = require("./Routes/LeaderBoardRoute");
+const ShopItemRoute = require("./Routes/ShopItemRoute");
+const RewardsRoute = require("./Routes/RewardsRoute");
+
 
 // Connect to the database
 connectDB();
@@ -43,6 +47,10 @@ app.use(express.urlencoded({ extended: true })); // For parsing application/x-ww
 app.use("/api", GameStateAndProgressRoutes);
 app.use("/api", UserRoute);
 app.use("/api", AdminRoute);
+app.use("/api", LeaderBoardRoute);
+app.use("/api", RewardsRoute);
+app.use("/api", ShopItemRoute);
+
 
 
 
