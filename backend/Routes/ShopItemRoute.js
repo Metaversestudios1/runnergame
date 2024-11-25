@@ -1,7 +1,9 @@
 const express =require('express');
-const {  items}=require("../Controllers/ShopItemsController");
+const {  items,insertitem,deleteItems}=require("../Controllers/ShopItemsController");
 const router = express.Router();
 
-router.get('/shop/items', items);
+router.get('admin/shop/items', insertitem);
+router.delete('admin/shop/items/:id', deleteItems);
+router.post('/shop/items', items);
 
 module.exports = router;
