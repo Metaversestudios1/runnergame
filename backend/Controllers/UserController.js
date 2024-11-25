@@ -1,9 +1,6 @@
 const User = require("../Models/User");
 const bcrypt = require("bcrypt");
-const crypto = require("crypto");
-const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
-const twilio = require("twilio");
 const Promocode = require("../Models/User");
 
 const register = async (req, res) => {
@@ -38,21 +35,19 @@ const register = async (req, res) => {
 };
 const profile = async (req, res) => {
   try {
-    const { user_id } = req.params;
-
+    const { id } = req.params;
     // Find user by ID
-    const user = await User.findById(user_id).select("-password"); // Exclude the password field
+    const user = await User.findById(id); // Exclude the password field
     if (!user) {
       return res.status(404).json({success: false, message: "User not found" });
     }
-
     res.status(200).json({success: true,
-      username: user.username,
+     userprofileData:{ username: user.username,
       email: user.email,
       highScore: user.highScore,
       coins: user.coins,
       achievements: user.achievements,
-    });
+    }});
   } catch (error) {
     res.status(500).json({ success: false,error: error.message });
   }
@@ -60,23 +55,20 @@ const profile = async (req, res) => {
 
 const updateprofile = async(req,res ) => {
   try {
-    const { user_id } = req.params;
+    const { id } = req.params;
     const { username, email, avatar } = req.body;
 
     // Find the user by ID
-    const user = await User.findById(user_id);
+    const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ success: false,message: "User not found" });
     }
-
-    // Update the user fields (only if provided in the request)
-    if (username) user.username = username;
-    if (email) user.email = email;
-    if (avatar) user.avatar = avatar;
-
-    // Save the updated user
-    await user.save();
-
+    Object.keys(req.body).forEach((key) => {
+      if (user[key] !== undefined) { // Check if the field exists in the user object
+        user[key] = req.body[key];
+      }
+    });
+   await user.save();
     res.status(200).json({
       success: true,
       message: "Profile updated successfully",
@@ -95,12 +87,22 @@ const updateprofile = async(req,res ) => {
 
 const login = async (req, res) => {
   try {
-    const { usernameOrEmail, password } = req.body;
+    const { email, username, password } = req.body;
 
-    // Find user by username or email
-    const user = await User.findOne({
-      $or: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
-    });
+    // Ensure at least one of email or username is provided
+    if ((!email && !username) || !password) {
+      return res.status(400).json({
+        message: "Either email or username and password are required.",
+      });
+    }
+    
+    // Determine the query based on whether email or username is provided
+    const query = email ? { email } : { username };
+    
+    console.log(query);
+    
+    // Find user by email or username
+    const user = await User.findOne(query);
 
     if (!user) {
       return res.status(404).json({ success: false,message: "User not found" });
