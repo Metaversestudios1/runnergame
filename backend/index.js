@@ -15,6 +15,8 @@ const ShopItemRoute = require("./Routes/ShopItemRoute");
 const RewardsRoute = require("./Routes/RewardsRoute");
 const InventoryRoute = require("./Routes/InventoryRoute");
 const EventRoute = require("./Routes/EventRoute.js");
+const AnalyticsAndMetricsRoute = require("./Routes/AnalyticsAndMetricsRoute")
+ 
 
 
 // Connect to the database
@@ -55,6 +57,7 @@ app.use("/api", RewardsRoute);
 app.use("/api", ShopItemRoute);
 app.use("/api", InventoryRoute);
 app.use("/api", EventRoute);
+app.use("/api", AnalyticsAndMetricsRoute);
 
 
 

@@ -92,11 +92,46 @@ const deleteEvent = async(req, res) => {
         res.status(500).json({ success: false, message: "error fetching Event" });
     }
 }  
+// Fetch Upcoming Events
+const getUpcomingEvents = async (req, res) => {
+  try {
+    const currentDate = new Date();
+    const events = await Event.find({ startTime: { $gte: currentDate } })
+      .sort({ startTime: 1 })
+      .select("name startTime endTime details");
+ 
+    res.status(200).json({ success: true, events });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Failed to fetch events", error });
+  }
+};
+ 
+// Send Notification
+const sendNotification = async (req, res) => {
+  try {
+    const { userIds, message } = req.body;
+ 
+    if (!userIds || !message) {
+      return res.status(400).json({ success: false, message: "User IDs and message are required" });
+    }
+ 
+    // const result = await sendPushNotification(userIds, message); // Assuming utility handles actual push notification logic
+ 
+    res.status(200).json({ success: true, message: "Notification sent successfully", result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Failed to send notification", error });
+  }
+};
+ 
+ 
 module.exports= {
     insertEvent,
     updateEvent,
     getAllEvent,
     getSingleEvent,
     deleteEvent,
+    getUpcomingEvents,
+  sendNotification,
+
   
 }
