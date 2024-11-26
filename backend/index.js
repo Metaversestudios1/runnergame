@@ -22,6 +22,7 @@ connectDB();
 const server = http.createServer(app);
 const allowedOrigins = [
 "http://localhost:5173", 
+"https://runnergame-frontend.vercel.app", 
 ];
 const corsOptions = {
   origin: function (origin, callback) {
