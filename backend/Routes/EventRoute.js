@@ -6,11 +6,11 @@ const { insertEvent,
 const express = require('express');
 const router = express.Router();
 
-router.post('insertEvent',insertEvent);
-router.put('updateEvent',updateEvent);
-router.get('getAllEvent',getAllEvent);
-router.post('getSingleEvent',getSingleEvent);
-router.delete('deleteEvent',deleteEvent);
+router.post('/insertEvent',insertEvent);
+router.put('/updateEvent',updateEvent);
+router.get('/getAllEvent',getAllEvent);
+router.post('/getSingleEvent',getSingleEvent);
+router.delete('/deleteEvent',deleteEvent);
 
 
 module.exports=router;
