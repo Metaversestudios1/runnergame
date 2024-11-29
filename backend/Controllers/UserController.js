@@ -130,9 +130,36 @@ const login = async (req, res) => {
   }
 };
 
+
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find and delete the user
+    const user = await User.findByIdAndDelete(id);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User account deleted successfully",
+      user: {
+        username: user.username,
+        email: user.email,
+        userId: user.userId,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 module.exports = {
   register,
   login,
   profile,
-  updateprofile
+  updateprofile,
+  deleteUser
 };
