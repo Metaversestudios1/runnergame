@@ -21,6 +21,7 @@ const insertitem = async (req, res) => {
   
     try {
         // Check if the item exists
+        const id  = req.query.id
         const result = await ShopItems.findByIdAndDelete(id);
         
         if (!result) {
