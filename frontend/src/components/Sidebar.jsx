@@ -6,6 +6,9 @@ import { BiSolidTrafficBarrier } from "react-icons/bi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { GiGooeyImpact } from "react-icons/gi";
+import { LuShoppingCart } from "react-icons/lu";
+import { MdOutlineEventAvailable } from "react-icons/md";
+
 
 const Sidebar = ({ sidebar, toggleSideBar }) => {
   const [openSubMenu, setOpenSubMenu] = useState({
@@ -114,15 +117,15 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
                 onClick={toggleSideBar}
               >
                 <NavLink
-                  to="/collectibles"
+                  to="/items"
                   className={({ isActive }) =>
                     isActive
                       ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
                       : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
                   }
                 >
-                  <BsCollection className="text-lg" />
-                  <div className="text-sm">Collectibles</div>
+                  <LuShoppingCart className="text-lg " />
+                  <div className="text-sm">Shop items</div>
                 </NavLink>
               </li>
               <li
@@ -131,53 +134,19 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
                 onClick={toggleSideBar}
               >
                 <NavLink
-                  to="/obstacles"
+                  to="/events"
                   className={({ isActive }) =>
                     isActive
                       ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
                       : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
                   }
                 >
-                  <BiSolidTrafficBarrier className="text-lg" />
-                  <div className="text-sm">Obstacles</div>
+                  <MdOutlineEventAvailable className="text-lg " />
+                  <div className="text-sm">Events</div>
                 </NavLink>
               </li>
-              <li
-                className=" hover:scale-105 transition-transform duration-200 "
-                id="users-accordion "
-                onClick={toggleSideBar}
-              >
-                <NavLink
-                  to="/initialsetting"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
-                      : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
-                  }
-                >
-                  <IoSettingsOutline className="text-lg" />
-                  <div className="text-sm">Initial Setting</div>
-                </NavLink>
-              </li>
-              <li
-                className=" hover:scale-105 transition-transform duration-200 "
-                id="users-accordion "
-                onClick={toggleSideBar}
-              >
-                <NavLink
-                  to="/impact"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
-                      : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
-                  }
-                >
-                  <GiGooeyImpact className="text-lg" />
-                  <div className="text-sm">Impact</div>
-                </NavLink>
-              </li>
-            </ul>
-          </nav>
+              </ul>
+              </nav>
         </div>
       </div>
     </>
@@ -185,3 +154,72 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
 };
 
 export default Sidebar;
+
+// <li
+//   className=" hover:scale-105 transition-transform duration-200 "
+//   id="users-accordion "
+//   onClick={toggleSideBar}
+// >
+//   <NavLink
+//     to="/collectibles"
+//     className={({ isActive }) =>
+//       isActive
+//         ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
+//         : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
+//     }
+//   >
+//     <BsCollection className="text-lg" />
+//     <div className="text-sm">Collectibles</div>
+//   </NavLink>
+// </li>
+// <li
+//   className=" hover:scale-105 transition-transform duration-200 "
+//   id="users-accordion "
+//   onClick={toggleSideBar}
+// >
+//   <NavLink
+//     to="/obstacles"
+//     className={({ isActive }) =>
+//       isActive
+//         ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
+//         : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
+//     }
+//   >
+//     <BiSolidTrafficBarrier className="text-lg" />
+//     <div className="text-sm">Obstacles</div>
+//   </NavLink>
+// </li>
+// <li
+//   className=" hover:scale-105 transition-transform duration-200 "
+//   id="users-accordion "
+//   onClick={toggleSideBar}
+// >
+//   <NavLink
+//     to="/initialsetting"
+//     className={({ isActive }) =>
+//       isActive
+//         ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
+//         : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
+//     }
+//   >
+//     <IoSettingsOutline className="text-lg" />
+//     <div className="text-sm">Initial Setting</div>
+//   </NavLink>
+// </li>
+// <li
+//   className=" hover:scale-105 transition-transform duration-200 "
+//   id="users-accordion "
+//   onClick={toggleSideBar}
+// >
+//   <NavLink
+//     to="/impact"
+//     className={({ isActive }) =>
+//       isActive
+//         ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
+//         : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
+//     }
+//   >
+//     <GiGooeyImpact className="text-lg" />
+//     <div className="text-sm">Impact</div>
+//   </NavLink>
+// </li>
