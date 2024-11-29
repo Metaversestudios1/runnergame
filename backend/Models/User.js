@@ -19,14 +19,6 @@ const UserSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    coins: {
-      type: Number,
-      default: 0,
-    },
-    avatar: {
-      type: String,
-      default: "default.png",
-    },
     achievements: {
       type: Array, // Can store any JSON-like structure
       default: [],

@@ -14,18 +14,18 @@ const GameProgressSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    coinsCollected: {
-      type: Number,
-      default: 0,
-    },
+    // coinsCollected: {
+    //   type: Number,
+    //   default: 0,
+    // },
     timePlayed: {
       type: Number, // Using Number for float values
       default: 0,
     },
-    powerupsUsed: {
-      type: [String], // Array of strings for JSON equivalent
-      default: [],
-    },
+    // powerupsUsed: {
+    //   type: [String], // Array of strings for JSON equivalent
+    //   default: [],
+    // },
     lastPlayed: {
       type: Date,
       default: Date.now, // Equivalent to Sequelize.NOW
