@@ -20,10 +20,10 @@ const AnalyticsSchema = new mongoose.Schema(
         type: Number,
         default: 0,
       },
-      // coinsCollected: {
-      //   type: Number,
-      //   default: 0,
-      // },
+      lastPlayed: {
+      type: Date,
+      default: Date.now, // Equivalent to Sequelize.NOW
+    },
       createdAt: {
         type: Date,
         default: Date.now,
