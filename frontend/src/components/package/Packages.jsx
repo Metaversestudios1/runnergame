@@ -148,10 +148,16 @@ const Packages = () => {
                   Description
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
-                  Package url
+                  Newly added Package
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
                   Size
+                </th>
+                <th scope="col" className="px-6 py-3 border-2 border-gray-300">
+                  Last added package
+                </th>
+                <th scope="col" className="px-6 py-3 border-2 border-gray-300">
+                  expiring date of last package
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
                   Action
@@ -192,6 +198,19 @@ const Packages = () => {
                     </th>
                     <td className="px-6 py-4 border-2 border-gray-300">
                       {item?.size}
+                    </td>
+                    <td className="px-6 py-4 border-2 border-gray-300">
+                    <a
+                        href={item?.file?.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
+                        Click to get last package
+                      </a>
+                    </td>
+                    <td className="px-6 py-4 border-2 border-gray-300">
+                      {(item?.previousFile?.expiresAt).split("T")[0]}
                     </td>
 
                     <td className=" p-5   border-2  border-gray-300">
