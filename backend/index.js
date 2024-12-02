@@ -16,6 +16,7 @@ const RewardsRoute = require("./Routes/RewardsRoute");
 const InventoryRoute = require("./Routes/InventoryRoute");
 const EventRoute = require("./Routes/EventRoute.js");
 const AnalyticsAndMetricsRoute = require("./Routes/AnalyticsAndMetricsRoute")
+const PackageRoutes = require("./Routes/PackageRoutes")
  
 
 
@@ -58,6 +59,7 @@ app.use("/api", ShopItemRoute);
 app.use("/api", InventoryRoute);
 app.use("/api", EventRoute);
 app.use("/api", AnalyticsAndMetricsRoute);
+app.use("/api", PackageRoutes);
 
 
 
