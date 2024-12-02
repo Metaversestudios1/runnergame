@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { FaAngleDown, FaUsers, FaAngleRight } from "react-icons/fa6";
+import { FaUsers } from "react-icons/fa6";
 import { NavLink } from "react-router-dom";
-import { BsCollection } from "react-icons/bs";
-import { BiSolidTrafficBarrier } from "react-icons/bi";
-import { IoSettingsOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
-import { GiGooeyImpact } from "react-icons/gi";
 import { LuShoppingCart } from "react-icons/lu";
 import { MdOutlineEventAvailable } from "react-icons/md";
+import { LuPackagePlus } from "react-icons/lu";
+import { LuPackage } from "react-icons/lu";
 
 
 const Sidebar = ({ sidebar, toggleSideBar }) => {
@@ -100,15 +98,32 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
                 onClick={toggleSideBar}
               >
                 <NavLink
-                  to="/players"
+                  to="/addpackage"
                   className={({ isActive }) =>
                     isActive
                       ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
                       : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
                   }
                 >
-                  <FaUsers className="text-lg " />
-                  <div className="text-sm">Players</div>
+                  <LuPackagePlus className="text-lg " />
+                  <div className="text-sm">Add Package</div>
+                </NavLink>
+              </li>
+              <li
+                className=" hover:scale-105 transition-transform duration-200 "
+                id="users-accordion "
+                onClick={toggleSideBar}
+              >
+                <NavLink
+                  to="/packages"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
+                      : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
+                  }
+                >
+                  <LuPackage className="text-lg " />
+                  <div className="text-sm">Packages</div>
                 </NavLink>
               </li>
               <li

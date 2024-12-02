@@ -20,7 +20,7 @@ const upload = multer({
 router.post('/insertUpdatePackage',upload.fields([
     { name: 'file', maxCount: 1 },
   ]),insertUpdatePackage);
-router.post('/getAllPackages',getAllPackages)
+router.get('/getAllPackages',getAllPackages)
   
 
 module.exports = router;

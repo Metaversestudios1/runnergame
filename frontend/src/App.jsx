@@ -15,6 +15,8 @@ import EditItem from "./components/item/EditItem";
 import Events from "./components/event/Events";
 import AddEvent from "./components/event/AddEvent";
 import EditEvent from "./components/event/EditEvent";
+import AddPackage from "./components/package/AddPackage";
+import Packages from "./components/package/Packages";
 // import Obstacles from "./components/obstacle/Obstacles";
 // import AddObstacle from "./components/obstacle/AddObstacle";
 // import EditObstacle from "./components/obstacle/EditObstacle";
@@ -41,6 +43,8 @@ function App() {
               <Route path="/events" element={<Events />} />
               <Route path="/events/addevent" element={<AddEvent />} />
               <Route path="/events/editevent/:id" element={<EditEvent />} />
+              <Route path="/packages" element={<Packages />} />
+              <Route path="/addpackage" element={<AddPackage />} />
               </Route>
           </Route>
         </Routes>
