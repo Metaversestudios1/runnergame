@@ -131,7 +131,21 @@ const uploadDocument = (buffer, originalname, mimetype) => {
 //     });
 //   }
 // };
-
+const convertFileSize = (sizeInBytes) => {
+    const kb = 1024;
+    const mb = kb * 1024;
+    const gb = mb * 1024;
+  
+    if (sizeInBytes < kb) {
+      return `${sizeInBytes} B`; // In bytes
+    } else if (sizeInBytes < mb) {
+      return `${(sizeInBytes / kb).toFixed(2)} KB`; // Convert to KB
+    } else if (sizeInBytes < gb) {
+      return `${(sizeInBytes / mb).toFixed(2)} MB`; // Convert to MB
+    } else {
+      return `${(sizeInBytes / gb).toFixed(2)} GB`; // Convert to GB
+    }
+  };
 
 const insertUpdatePackage = async (req, res) => {
     try {
@@ -158,7 +172,7 @@ const insertUpdatePackage = async (req, res) => {
           message: "Invalid file data",
         });
       }
-  
+   const fileSizeFormatted = convertFileSize(fileSize);
       // Upload the new file to Cloudinary
       const uploadResult = await uploadDocument(fileBuffer, originalname, mimetype);
   
@@ -189,7 +203,7 @@ const insertUpdatePackage = async (req, res) => {
         existingPackage.previousFile = previousFile; // Set the current file as previous
         existingPackage.file = newFile; // Update to the new file
         existingPackage.description = description || existingPackage.description; // Update description if provided
-        existingPackage.size = fileSize; // Update size
+        existingPackage.size = fileSizeFormatted; // Update size
         existingPackage.status = "active"; // Ensure the status is active
         existingPackage.updatedAt = Date.now(); // Update timestamp
   
@@ -205,7 +219,7 @@ const insertUpdatePackage = async (req, res) => {
         const newPackage = new Package({
           file: newFile,
           description: description || undefined,
-          size: fileSize,
+          size: fileSizeFormatted,
           status: "active",
           previousFile: null, // No previous file for a new package
         });

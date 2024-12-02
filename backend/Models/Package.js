@@ -11,7 +11,7 @@ const PackageSchema = new mongoose.Schema({
         type: String, // Optional description provided by the user
     },
     size: {
-        type: Number, // File size in bytes
+        type: String, // File size in bytes
     },
     status: {
         type: String,
