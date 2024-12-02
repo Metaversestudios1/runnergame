@@ -4,9 +4,9 @@ const router = express.Router();
 
 router.post('/users/register',register);
 router.post('/users/login',login);
-router.post('/users/:id/profile',profile);
-router.put('/users/:id/profile',updateprofile);
-router.delete('/users/:id/delete',deleteUser);
+router.post('/users/:id',profile);
+router.put('/users/:id',updateprofile);
+router.delete('/users/:id',deleteUser);
 
 
 
