@@ -10,11 +10,10 @@ const Packages = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [count, setCount] = useState(0);
-  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetchData();
-  }, [page, search]);
+  }, [page]);
 
   const fetchData = async () => {
     setLoader(true);
@@ -24,10 +23,11 @@ const Packages = () => {
         `${import.meta.env.VITE_BACKEND_URL}/api/getAllPackages`
       );
       const response = await res.json();
-      console.log(response);
+      console.log(response)
       if (response.success) {
         setNoData(false);
         if (response.data.length === 0) {
+          console.log("true")
           setNoData(true);
         }
         setPackages(response.data);
@@ -80,14 +80,35 @@ const Packages = () => {
       }
     }
   };
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name === "search") {
-      setSearch(value);
-      setPage(1);
+
+  const handleRemainingDays = (expireFullDate) => {
+    if(!expireFullDate) {
+      return "N/A"
     }
-  };
-  console.log(packages);
+    const currentDate = new Date();
+    const expireDate = new Date(expireFullDate);
+
+    const remainingTime = expireDate - currentDate; // Difference in milliseconds
+
+    if (remainingTime <= 0) {
+        return "Expired";
+    }
+
+    const remainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24)); // Convert ms to days
+
+    if (remainingDays > 0) {
+        return `${remainingDays} day(s) remaining`;
+    }
+    const remainingHours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); // Hours
+    if (remainingHours > 0) {
+        return `${remainingHours} hour(s) remaining`;
+    }
+
+    const remainingMinutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60)); // Minutes
+    return `${remainingMinutes} minute(s) remaining`;
+};
+
+
   const startIndex = (page - 1) * pageSize;
   return (
     <div className="relative">
@@ -113,16 +134,7 @@ const Packages = () => {
             Add New
           </button>
         </NavLink>
-        <div className={`flex items-center`}>
-          <input
-            placeholder="Search "
-            value={search}
-            onChange={handleChange}
-            type="text"
-            name="search"
-            className={`text-black border-[1px] rounded-lg bg-white p-2 m-5`}
-          />
-        </div>
+        
       </div>
       {loader && (
         <div className="absolute h-full w-full  flex justify-center items-center">
@@ -148,16 +160,16 @@ const Packages = () => {
                   Description
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
-                  Newly added Package
+                  Package file
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
                   Size
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
-                  Last added package
+                  Status
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
-                  expiring date of last package
+                  Remaining days to expire
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
                   Action
@@ -168,7 +180,7 @@ const Packages = () => {
             <tbody>
               {packages.map((item, index) => {
                 return (
-                  <tr className="bg-white">
+                  <tr className="bg-white" key={item._id}>
                     <th
                       scope="row"
                       className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-2 border-gray-300"
@@ -200,17 +212,10 @@ const Packages = () => {
                       {item?.size}
                     </td>
                     <td className="px-6 py-4 border-2 border-gray-300">
-                    <a
-                        href={item?.file?.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:underline"
-                      >
-                        Click to get last package
-                      </a>
+                   {item?.status}
                     </td>
                     <td className="px-6 py-4 border-2 border-gray-300">
-                      {(item?.previousFile?.expiresAt).split("T")[0]}
+                      {handleRemainingDays(item?.expiresAt)}
                     </td>
 
                     <td className=" p-5   border-2  border-gray-300">
