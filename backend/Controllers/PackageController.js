@@ -149,9 +149,6 @@ const convertFileSize = (sizeInBytes) => {
 
 const insertUpdatePackage = async (req, res) => {
   try {
-    console.log(req.files);
-
-    // Check if the file is provided
     if (!req.files || !req.files["file"] || !req.files["file"][0]) {
       return res.status(400).json({
         success: false,
@@ -160,7 +157,7 @@ const insertUpdatePackage = async (req, res) => {
     }
 
     const documentFile = req.files["file"][0];
-    const { description } = req.body; // Optional description
+    const { description } = req.body;
     const fileBuffer = documentFile.buffer;
     const originalname = documentFile.originalname.toLowerCase();
     const mimetype = documentFile.mimetype;
@@ -174,7 +171,6 @@ const insertUpdatePackage = async (req, res) => {
     }
     const fileSizeFormatted = convertFileSize(fileSize);
 
-    // Upload the new file to Cloudinary
     const uploadResult = await uploadDocument(
       fileBuffer,
       originalname,
@@ -188,11 +184,9 @@ const insertUpdatePackage = async (req, res) => {
       mimetype: mimetype,
     };
 
-    // Check if a package already exists
     const existingPackage = await Package.findOne({ status: "active" });
 
     if (existingPackage) {
-      // Update the existing package as "deleted" and set its expiration
       existingPackage.status = "deleted";
       existingPackage.expiresAt = new Date(
         Date.now() + 25 * 24 * 60 * 60 * 1000
@@ -200,13 +194,12 @@ const insertUpdatePackage = async (req, res) => {
       await existingPackage.save();
     }
 
-    // Insert the new package as active
     const newPackage = new Package({
       file: newFile,
       description: description || undefined,
       size: fileSizeFormatted,
       status: "active",
-      expiresAt: null, // Active packages have no expiration initially
+      expiresAt: null,
     });
 
     await newPackage.save();
@@ -230,16 +223,11 @@ const getAllPackages = async (req, res) => {
   try {
     const currentDate = new Date();
 
-    // Remove expired packages from the database
     await Package.deleteMany({ expiresAt: { $lte: currentDate } });
 
-    // Fetch active and valid packages
     const packages = await Package.find({
-      $or: [
-        { expiresAt: null }, // Active packages with no expiration
-        { expiresAt: { $gt: currentDate } }, // Packages that haven't expired yet
-      ],
-    }).sort({ createdAt: -1 }); // Sort by creation date in descending order
+      $or: [{ expiresAt: null }, { expiresAt: { $gt: currentDate } }],
+    }).sort({ createdAt: -1 });
 
     return res.status(200).json({
       success: true,
