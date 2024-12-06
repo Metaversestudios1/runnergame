@@ -1,5 +1,5 @@
 const express =require('express');
-const {insertUpdatePackage,getAllPackages}=require("../Controllers/PackageController");
+const {insertUpdatePackage,getAllPackages, getActivePackage}=require("../Controllers/PackageController");
 const router = express.Router();
 const multer = require('multer');
 
@@ -17,10 +17,12 @@ const upload = multer({
     }
   }
 });
-router.post('/insertUpdatePackage',upload.fields([
-    { name: 'file', maxCount: 1 },
-  ]),insertUpdatePackage);
+// router.post('/insertUpdatePackage',upload.fields([
+//     { name: 'file', maxCount: 1 },
+//   ]),insertUpdatePackage);
+router.post('/insertUpdatePackage', insertUpdatePackage);
 router.get('/getAllPackages',getAllPackages)
+router.get("/active-package", getActivePackage);
   
 
 module.exports = router;

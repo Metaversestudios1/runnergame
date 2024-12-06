@@ -6,8 +6,9 @@ import { ToastContainer, toast } from "react-toastify";
 const AddPackage = () => {
   const initialState = {
     file: null,
-    description: "",
-  };
+version:"" ,
+description:"" ,
+ };
   const navigate = useNavigate();
   const [data, setData] = useState(initialState);
   const [loader , setLoader] = useState(false);
@@ -33,7 +34,9 @@ const AddPackage = () => {
     setLoader(true)
     const formData = new FormData();
     formData.append("file", data.file);
-    formData.append("description", data.description);
+    formData.append("version",  data.version);
+    formData.append("description",  data.description);
+
 
     try {
       const res = await fetch(
@@ -60,7 +63,7 @@ const AddPackage = () => {
         }, 1500);
       } else {
         setLoader(false)
-        toast.error(response.message || "Failed to add the package", {
+        toast.success("Package updated succesfully", {
           position: "top-right",
           autoClose: 2000,
           hideProgressBar: false,
@@ -72,7 +75,7 @@ const AddPackage = () => {
       }
     } catch (error) {
       console.error("Error uploading package:", error);
-      toast.error("An error occurred while uploading the package", {
+      toast.error(response.message , {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -128,10 +131,31 @@ const AddPackage = () => {
             <form action="">
               <div className="">
                 <label
+                  htmlFor="version"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
+                >
+                Version
+                  <span className="text-red-900 text-lg ">&#x2a;</span>
+                </label>
+                <input
+                  name="version"
+                  value={data.version}
+                  onChange={(e) => {
+                    setData({ ...data, version: e.target.value });
+                  }}
+                  type="text"
+                  id="version"
+                  className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black block w-full p-2.5 "
+                  placeholder="Version"
+                  required
+                />
+              </div>
+              <div className="">
+                <label
                   htmlFor="description"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
                 >
-                  Description
+                Description
                   <span className="text-red-900 text-lg ">&#x2a;</span>
                 </label>
                 <textarea
@@ -140,10 +164,10 @@ const AddPackage = () => {
                   onChange={(e) => {
                     setData({ ...data, description: e.target.value });
                   }}
-                  type="number"
+                  type="text"
                   id="description"
                   className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-black block w-full p-2.5 "
-                  placeholder="Description"
+                  placeholder="description"
                   required
                 />
               </div>

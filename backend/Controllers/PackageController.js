@@ -3,231 +3,107 @@ const path = require("path");
 const dotenv = require("dotenv");
 const cloudinary = require("cloudinary").v2;
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const unzipper = require("unzipper");
 require("dotenv").config();
 
 dotenv.config();
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-const uploadDocument = (buffer, originalname, mimetype) => {
-  return new Promise((resolve, reject) => {
-    if (!mimetype || typeof mimetype !== "string") {
-      return reject(new Error("MIME type is required and must be a string"));
-    }
-
-    let resourceType = "raw"; // Default to 'raw' for non-image/video files
-    if (mimetype.startsWith("image")) {
-      resourceType = "image";
-    } else if (mimetype.startsWith("video")) {
-      resourceType = "video";
-    } else if (mimetype === "application/pdf") {
-      resourceType = "raw"; // Explicitly set PDFs as raw
-    }
-
-    const fileExtension = path.extname(originalname);
-    const fileNameWithoutExtension = path.basename(originalname, fileExtension);
-    const publicId = `${fileNameWithoutExtension}${fileExtension}`;
-
-    const options = {
-      resource_type: resourceType,
-      public_id: publicId,
-      use_filename: true,
-      unique_filename: false,
-      overwrite: true,
-    };
-
-    const uploadStream = cloudinary.uploader.upload(
-      `data:${mimetype};base64,${buffer.toString("base64")}`,
-      options,
-      (error, result) => {
-        if (error) {
-          console.error("Cloudinary upload error:", error);
-          return reject(new Error("Cloudinary upload failed"));
-        }
-        resolve(result);
-      }
-    );
-  });
-};
-
-// const insertUpdatePackage = async (req, res) => {
-//   try {
-//     console.log(req.files);
-//     if (!req.files || !req.files["file"] || !req.files["file"][0]) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "No file provided",
-//       });
-//     }
-
-//     const documentFile = req.files["file"][0];
-//     const { description } = req.body; // Optional description
-//     const fileBuffer = documentFile.buffer;
-//     const originalname = documentFile.originalname.toLowerCase();
-//     const mimetype = documentFile.mimetype;
-//     const fileSize = documentFile.size; // File size in bytes
-
-//     if (!fileBuffer) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Invalid file data",
-//       });
-//     }
-
-//     // Upload new package to Cloudinary
-//     const uploadResult = await uploadDocument(fileBuffer, originalname, mimetype);
-//     document = {
-//         publicId: uploadResult.public_id,
-//         url: uploadResult.secure_url,
-//         originalname: documentFile.originalname,
-//         mimetype: documentFile.mimetype,
-//       };
-//     // Check if a package with the same name exists
-//     const existingPackage = await Package.findOne();
-//     console.log(existingPackage);
-
-//     if (existingPackage) {
-//       // Mark the existing package as expired and set expiration date
-//       existingPackage.previousFile = {
-//         file: existingPackage.filePath, // Store the current file path in previousFile
-//         expiresAt: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000), // 25 days from now
-//         size: existingPackage.size, // Optional: retain size of the previous file
-//       };
-
-//       await existingPackage.save();
-//     }
-//     // Save the new package details to the database
-//     const newPackage = new Package({
-//       name: originalname,
-//       file: document,
-//       description: description || undefined,
-//       size: fileSize,
-//       status: 'active',
-//       expiresAt: null, // New packages have no expiration
-//     });
-
-//     await newPackage.save();
-
-//     res.status(201).json({
-//       success: true,
-//       message: "Package uploaded successfully",
-//       data: {
-//         name: newPackage.name,
-//         filePath: newPackage.filePath,
-//         size: newPackage.size,
-//         description: newPackage.description,
-//       },
-//     });
-//   } catch (error) {
-//     console.error("Error in insertUpdatePackage:", error.message);
-//     res.status(500).json({
-//       success: false,
-//       message: "Error uploading package",
-//       error: error.message,
-//     });
-//   }
-// };
-const convertFileSize = (sizeInBytes) => {
-  const kb = 1024;
-  const mb = kb * 1024;
-  const gb = mb * 1024;
-
-  if (sizeInBytes < kb) {
-    return `${sizeInBytes} B`; // In bytes
-  } else if (sizeInBytes < mb) {
-    return `${(sizeInBytes / kb).toFixed(2)} KB`; // Convert to KB
-  } else if (sizeInBytes < gb) {
-    return `${(sizeInBytes / mb).toFixed(2)} MB`; // Convert to MB
-  } else {
-    return `${(sizeInBytes / gb).toFixed(2)} GB`; // Convert to GB
-  }
-};
-
 const insertUpdatePackage = async (req, res) => {
   try {
-    if (!req.files || !req.files["file"] || !req.files["file"][0]) {
-      return res.status(400).json({
-        success: false,
-        message: "No file provided",
-      });
+    const { version, description } = req.body;
+    const file = req.files.file;
+
+    // Define storage path
+    const uploadPath = path.join(__dirname, "../uploads/unity_builds", version);
+
+    // Ensure version folder doesn't already exist
+    if (fs.existsSync(uploadPath)) {
+      return res.status(400).json({ message: "Version already exists!" });
     }
 
-    const documentFile = req.files["file"][0];
-    const { description } = req.body;
-    const fileBuffer = documentFile.buffer;
-    const originalname = documentFile.originalname.toLowerCase();
-    const mimetype = documentFile.mimetype;
-    const fileSize = documentFile.size; // File size in bytes
-
-    if (!fileBuffer) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid file data",
-      });
-    }
-    const fileSizeFormatted = convertFileSize(fileSize);
-
-    const uploadResult = await uploadDocument(
-      fileBuffer,
-      originalname,
-      mimetype
+    // Set expiration date for the existing latest package
+    const currentDate = new Date();
+    const expirationDate = new Date(
+      currentDate.setDate(currentDate.getDate() + 25)
+    );
+    await Package.findOneAndUpdate(
+      { expiresAt: null }, // Find the currently active package
+      { expiresAt: expirationDate }, // Set expiration date
+      { new: true }
     );
 
-    const newFile = {
-      publicId: uploadResult.public_id,
-      url: uploadResult.secure_url,
-      originalname: originalname,
-      mimetype: mimetype,
-    };
+    // Create directory
+    fs.mkdirSync(uploadPath, { recursive: true });
 
-    const existingPackage = await Package.findOne({ status: "active" });
+    // Stream and unzip
+    const zipStream = fs.createReadStream(file.tempFilePath);
+    const unzipStream = unzipper.Extract({ path: uploadPath });
 
-    if (existingPackage) {
-      existingPackage.status = "deleted";
-      existingPackage.expiresAt = new Date(
-        Date.now() + 25 * 24 * 60 * 60 * 1000
-      );
-      await existingPackage.save();
-    }
+    zipStream
+      .pipe(unzipStream)
+      .on("close", async () => {
+        if (!fs.existsSync(path.join(uploadPath, "index.html"))) {
+          return res
+            .status(400)
+            .json({ message: "Invalid Unity package structure." });
+        }
 
-    const newPackage = new Package({
-      file: newFile,
-      description: description || undefined,
-      size: fileSizeFormatted,
-      status: "active",
-      expiresAt: null,
-    });
+        // Save the new package to the database
+        try {
+          const newPackage = new Package({
+            version,
+            uploadPath,
+            description,
+            expiresAt: null, // Latest package has no expiration
+          });
 
-    await newPackage.save();
-
-    return res.status(201).json({
-      success: true,
-      message: "Package uploaded successfully",
-      data: newPackage,
-    });
+          await newPackage.save();
+          res.status(200).json({success : true,  message: "Package uploaded successfully!" });
+        } catch (dbError) {
+          console.error("Database error:", dbError);
+          return res
+            .status(500)
+            .json({
+              message: "Failed to save package details to the database.",
+            });
+        }
+      })
+      .on("error", (err) => {
+        console.error(err);
+        res.status(500).json({ message: "Failed to upload package." });
+      });
   } catch (error) {
-    console.error("Error in insertUpdatePackage:", error.message);
-    res.status(500).json({
-      success: false,
-      message: "Error uploading package",
-      error: error.message,
-    });
+    console.error(error);
+    res.status(500).json({ message: "An error occurred." });
   }
 };
 
+// Get Active Unity Package
+const getActivePackage = async (req, res) => {
+  try {
+    const activePackage = await Package.findOne({ expiresAt: null });
+
+    if (!activePackage) {
+      return res.status(404).json({ message: "No active package found." });
+    }
+
+    // Construct the public URL
+    const buildUrl = `http://localhost:8000/uploads/unity_builds/${activePackage.version}/index.html`;
+
+    res.status(200).json({
+      build_url: buildUrl,
+      version: activePackage.version,
+    });
+  } catch (error) {
+    console.error("Error in getActivePackage:", error);
+    res.status(500).json({ message: "Failed to fetch the active package." });
+  }
+};
 const getAllPackages = async (req, res) => {
   try {
-    const currentDate = new Date();
 
-    await Package.deleteMany({ expiresAt: { $lte: currentDate } });
-
-    const packages = await Package.find({
-      $or: [{ expiresAt: null }, { expiresAt: { $gt: currentDate } }],
-    }).sort({ createdAt: -1 });
+    const packages = await Package.find({}).sort({ createdAt: -1 });
 
     return res.status(200).json({
       success: true,
@@ -244,4 +120,4 @@ const getAllPackages = async (req, res) => {
   }
 };
 
-module.exports = { insertUpdatePackage, getAllPackages };
+module.exports = { insertUpdatePackage, getAllPackages, getActivePackage };

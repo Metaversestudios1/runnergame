@@ -160,20 +160,11 @@ const Packages = () => {
                   Description
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
-                  Package file
-                </th>
-                <th scope="col" className="px-6 py-3 border-2 border-gray-300">
-                  Size
-                </th>
-                <th scope="col" className="px-6 py-3 border-2 border-gray-300">
-                  Status
-                </th>
-                <th scope="col" className="px-6 py-3 border-2 border-gray-300">
                   Remaining days to expire
                 </th>
-                <th scope="col" className="px-6 py-3 border-2 border-gray-300">
+               {/* <th scope="col" className="px-6 py-3 border-2 border-gray-300">
                   Action
-                </th>
+                </th>*/}
               </tr>
             </thead>
 
@@ -195,36 +186,18 @@ const Packages = () => {
                       {item?.description}
                     </th>
 
-                    <th
-                      scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-2 border-gray-300"
-                    >
-                      <a
-                        href={item?.file?.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:underline"
-                      >
-                        Click to get package
-                      </a>
-                    </th>
-                    <td className="px-6 py-4 border-2 border-gray-300">
-                      {item?.size}
-                    </td>
-                    <td className="px-6 py-4 border-2 border-gray-300">
-                   {item?.status}
-                    </td>
+                  
                     <td className="px-6 py-4 border-2 border-gray-300">
                       {handleRemainingDays(item?.expiresAt)}
                     </td>
 
-                    <td className=" p-5   border-2  border-gray-300">
+                    {/*<td className=" p-5   border-2  border-gray-300">
                       <div className="flex items-center">
                         <NavLink to={`/obstacles/editobstacle/${item?._id}`}>
                           <CiEdit className="text-2xl cursor-pointer text-blue-900" />
                         </NavLink>
                       </div>
-                    </td>
+                    </td>*/}
                   </tr>
                 );
               })}

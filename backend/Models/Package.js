@@ -2,29 +2,28 @@ const mongoose = require("mongoose");
 
 const PackageSchema = new mongoose.Schema(
   {
-    file: {
-      publicId: { type: String },
-      url: { type: String },
-      originalname: { type: String },
-      mimetype: { type: String },
+    version: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    uploadPath: {
+      type: String,
+      required: true,
     },
     description: {
-      type: String, // Optional description provided by the user
-    },
-    size: {
-      type: String, // File size in bytes
-    },
-    status: {
       type: String,
-      enum: ["active", "expired", "deleted"], // Status of the package
-      default: "active",
     },
     expiresAt: {
-      type: Date, // Expiration date of the previous file
-      default: null,
+      type: Date,
+      default: null, 
+    },
+    uploadDate: {
+      type: Date,
+      default: Date.now,
     },
   },
-  { timestamps: true, collection: "package" }
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Package", PackageSchema);

@@ -1,0 +1,1 @@
+console.log("Demo JavaScript file for Unity WebGL build.");

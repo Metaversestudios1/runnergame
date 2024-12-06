@@ -4,6 +4,11 @@ const http = require("http");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const PORT = process.env.PORT || 8000;
+const path = require("path");
+const fileUpload = require("express-fileupload");
+const cron = require("node-cron");
+const status = require("express-status-monitor")
+const cleanupExpiredPackages = require("./jobs/cleanupExpiredPackages.js");
 
 // Import your routes
 const AdminRoute = require("./Routes/AdminRoute");
@@ -49,7 +54,15 @@ app.use(express.urlencoded({ extended: true })); // For parsing application/x-ww
 
 // Use your routes
 // app.use('/api', GameRoutes(io));
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  })
+);
 
+// Serve static files
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api", GameStateAndProgressRoutes);
 app.use("/api", UserRoute);
 app.use("/api", AdminRoute);
@@ -61,13 +74,17 @@ app.use("/api", EventRoute);
 app.use("/api", AnalyticsAndMetricsRoute);
 app.use("/api", PackageRoutes);
 
-
+cron.schedule("0 0 * * *", () => {
+  console.log("Running cleanup job...");
+  cleanupExpiredPackages();
+});
 
 
 // Root route
 app.get("/", (req, res) => {
   res.send("Hello World !");
 });
+app.use(status())
 // Start the server
 server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
