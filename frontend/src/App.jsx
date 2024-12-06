@@ -17,7 +17,7 @@ import AddEvent from "./components/event/AddEvent";
 import EditEvent from "./components/event/EditEvent";
 import AddPackage from "./components/package/AddPackage";
 import Packages from "./components/package/Packages";
-// import Obstacles from "./components/obstacle/Obstacles";
+ import User from "./components/user/User";
 // import AddObstacle from "./components/obstacle/AddObstacle";
 // import EditObstacle from "./components/obstacle/EditObstacle";
 // import EditInitialSetting from "./components/level/EditInitialSetting";
@@ -45,6 +45,7 @@ function App() {
               <Route path="/events/editevent/:id" element={<EditEvent />} />
               <Route path="/packages" element={<Packages />} />
               <Route path="/addpackage" element={<AddPackage />} />
+              <Route path="/user" element={<User />} />
               </Route>
           </Route>
         </Routes>

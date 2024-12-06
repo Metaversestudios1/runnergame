@@ -156,10 +156,36 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const getAllusers = async (req, res) => {
+  try{
+    const pageSize = parseInt(req.query.limit);
+    const page = parseInt(req.query.page);
+    const search = req.query.search;
+
+    const query = {
+        deleted_at: null,
+    };
+    if (search) {
+        query.username = { $regex: search, $options: "i" };
+        
+    }
+
+    const result = await User.find(query)
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * pageSize)
+        .limit(pageSize);
+    const count = await User.find(query).countDocuments();
+    res.status(200).json({ success: true, result, count });
+
+}catch(error){
+    res.status(500).json({success:false,message:"error inserting bet"});
+ }
+};
 module.exports = {
   register,
   login,
   profile,
   updateprofile,
-  deleteUser
+  deleteUser,
+  getAllusers
 };

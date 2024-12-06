@@ -132,18 +132,18 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
                 onClick={toggleSideBar}
               >
                 <NavLink
-                  to="/items"
+                  to="/user"
                   className={({ isActive }) =>
                     isActive
                       ? "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-white bg-[#7978E9] rounded-lg"
                       : "flex items-center gap-x-3.5 py-2 px-2.5 text-sm text- rounded-lg hover:text-black hover:bg-white"
                   }
                 >
-                  <LuShoppingCart className="text-lg " />
-                  <div className="text-sm">Shop items</div>
+                  <FaUsers className="text-lg " />
+                  <div className="text-sm">Users</div>
                 </NavLink>
               </li>
-              <li
+              {/* <li
                 className=" hover:scale-105 transition-transform duration-200 "
                 id="users-accordion "
                 onClick={toggleSideBar}
@@ -159,7 +159,7 @@ const Sidebar = ({ sidebar, toggleSideBar }) => {
                   <MdOutlineEventAvailable className="text-lg " />
                   <div className="text-sm">Events</div>
                 </NavLink>
-              </li>
+              </li> */}
               </ul>
               </nav>
         </div>
