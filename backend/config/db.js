@@ -7,8 +7,8 @@ dotenv.config();
 const connectDB = async () => {
     try {
         // Use environment variable for MongoDB URI if defined, fallback to local DB
-        const mongoURI = "mongodb://localhost:27017/runner";
-        
+        //const mongoURI = "mongodb://localhost:27017/runner";
+        const mongoURI = process.env.mongoURI
         // Connect to MongoDB using mongoose without deprecated options
         await mongoose.connect(mongoURI);
 
