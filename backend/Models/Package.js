@@ -14,9 +14,16 @@ const PackageSchema = new mongoose.Schema(
     description: {
       type: String,
     },
+    // expiresAt: {
+    //   type: Date,
+    //   default: null, 
+    // },
     expiresAt: {
       type: Date,
-      default: null, 
+      default: null,
+      index: {
+        expireAfterSeconds: 0, // TTL index is applied here
+      },
     },
     uploadDate: {
       type: Date,
