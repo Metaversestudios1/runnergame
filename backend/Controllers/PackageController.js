@@ -120,24 +120,28 @@ const uploadImage = (buffer, originalname, mimetype) => {
 // Get Active Unity Package
 const getActivePackage = async (req, res) => {
   try {
-    const activePackage = await Package.findOne({ expiresAt: null });
+    // Find the latest package based on creation time
+    const activePackage = await Package.findOne().sort({ createdAt: -1 });
 
     if (!activePackage) {
-      return res.status(404).json({ message: "No active package found." });
+      return res.status(404).json({ message: "No package found." });
     }
 
-    // Construct the public URL
-    const buildUrl = `http://localhost:8000/uploads/unity_builds/${activePackage.version}/index.html`;
+    // Use the uploadPath field to provide the file URL
+    const buildUrl = `${activePackage.uploadPath}/index.html`; // Assuming the build entry point is index.html
+    const zipUrl = activePackage.uploadPath; // Direct URL to the ZIP file stored in Cloudinary
 
     res.status(200).json({
       build_url: buildUrl,
+      zip_url: zipUrl, // Provide the Cloudinary URL for the ZIP file
       version: activePackage.version,
     });
   } catch (error) {
     console.error("Error in getActivePackage:", error);
-    res.status(500).json({ message: "Failed to fetch the active package." });
+    res.status(500).json({ message: "Failed to fetch the package." });
   }
 };
+
 const getAllPackages = async (req, res) => {
   try {
 

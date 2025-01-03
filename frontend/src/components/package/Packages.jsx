@@ -203,20 +203,24 @@ const Packages = () => {
                       {handleRemainingDays(item?.expiresAt)}
                     </td>
                     <th
-                      scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-2 border-gray-300"
-                    >
-                   
-  <a
-    href={item?.uploadPath} // The URL to the file
-    download
-    className="text-blue-600 hover:text-blue-800"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    Download File
-  </a>
-                    </th>
+  scope="row"
+  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-2 border-gray-300"
+>
+  {item?.uploadPath ? ( // Check if the record exists
+    <a
+      href={item.uploadPath} // The URL to the file
+      download
+      className="text-blue-600 hover:text-blue-800"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Download File
+    </a>
+  ) : (
+    <span className="text-gray-500">No file available</span> // Message when no file exists
+  )}
+</th>
+
 
                     {/*<td className=" p-5   border-2  border-gray-300">
                       <div className="flex items-center">
