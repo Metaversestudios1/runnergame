@@ -46,6 +46,21 @@ description:"" ,
       return;
     }
     
+
+    const allowedFileTypes = ['application/zip', 'application/x-zip-compressed', 'multipart/x-zip']; // MIME types for ZIP files
+
+if (!allowedFileTypes.includes(data.file.type)) {
+  toast.error("Only ZIP files are allowed", {
+    position: "top-right",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    theme: "light",
+  });
+  return;
+}
     setLoader(true)
     const formData = new FormData();
     formData.append("file", data.file);
