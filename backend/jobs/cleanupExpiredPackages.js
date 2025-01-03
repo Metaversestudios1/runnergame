@@ -1,6 +1,15 @@
 const fs = require("fs");
 const path = require("path");
+const cloudinary = require("cloudinary").v2; // Cloudinary SDK
 const Package = require("../Models/Package");
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 const cleanupExpiredPackages = async () => {
   try {
     const now = new Date();
@@ -11,17 +20,18 @@ const cleanupExpiredPackages = async () => {
     for (const pkg of expiredPackages) {
       const packagePath = pkg.uploadPath;
 
-      // Delete files from the file system if it exists
+      // Delete files from Cloudinary
+      const cloudinaryPublicId = extractPublicIdFromUrl(packagePath);
       try {
-        if (await fs.access(packagePath).then(() => true).catch(() => false)) {
-          // If directory exists, remove it recursively
-          await fs.rm(packagePath, { recursive: true, force: true });
-          console.log(`Deleted package files: ${packagePath}`);
+        if (cloudinaryPublicId) {
+          // Delete from Cloudinary using the public ID
+          await cloudinary.uploader.destroy(cloudinaryPublicId);
+          console.log(`Deleted package file from Cloudinary: ${packagePath}`);
         } else {
-          console.log(`No files found at: ${packagePath}`);
+          console.log(`No valid Cloudinary public ID found in URL: ${packagePath}`);
         }
       } catch (err) {
-        console.error(`Error deleting files for package ${pkg.version}:`, err);
+        console.error(`Error deleting Cloudinary file for package ${pkg.version}:`, err);
       }
 
       // Remove package from the database
@@ -36,4 +46,12 @@ const cleanupExpiredPackages = async () => {
     console.error("Error cleaning up expired packages:", error);
   }
 };
+
+// Helper function to extract public ID from Cloudinary URL
+const extractPublicIdFromUrl = (url) => {
+  const regex = /\/v\d+\/(.+?)\./; // Match the public ID from the URL
+  const match = url.match(regex);
+  return match ? match[1] : null;
+};
+
 module.exports = cleanupExpiredPackages;

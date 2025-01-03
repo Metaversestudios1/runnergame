@@ -5,7 +5,7 @@ const PackageSchema = new mongoose.Schema(
     version: {
       type: String,
       required: true,
-      unique: true,
+      // unique: true,
     },
     uploadPath: {
       type: String,

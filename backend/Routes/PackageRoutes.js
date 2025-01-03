@@ -2,8 +2,6 @@ const express =require('express');
 const {insertUpdatePackage,getAllPackages, getActivePackage}=require("../Controllers/PackageController");
 const router = express.Router();
 const multer = require('multer');
-
-
 const storage = multer.memoryStorage();
 
 const upload = multer({
@@ -17,10 +15,9 @@ const upload = multer({
     }
   }
 });
-// router.post('/insertUpdatePackage',upload.fields([
-//     { name: 'file', maxCount: 1 },
-//   ]),insertUpdatePackage);
-router.post('/insertUpdatePackage', insertUpdatePackage);
+
+// Handle the form submission using multer middleware
+router.post('/insertUpdatePackage', upload.single('file'),  insertUpdatePackage);
 router.get('/getAllPackages',getAllPackages)
 router.get("/active-package", getActivePackage);
   

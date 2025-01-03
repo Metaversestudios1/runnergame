@@ -157,10 +157,16 @@ const Packages = () => {
                   Sr no.
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
+                Version
+                </th>
+                <th scope="col" className="px-6 py-3 border-2 border-gray-300">
                   Description
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
                   Remaining days to expire
+                </th>
+                <th scope="col" className="px-6 py-3 border-2 border-gray-300">
+                 View File/Download File
                 </th>
                {/* <th scope="col" className="px-6 py-3 border-2 border-gray-300">
                   Action
@@ -178,6 +184,12 @@ const Packages = () => {
                     >
                       {startIndex + index + 1}
                     </th>
+                    <th
+                      scope="row"
+                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-2 border-gray-300"
+                    >
+                      {item?.version}
+                    </th>
 
                     <th
                       scope="row"
@@ -190,6 +202,21 @@ const Packages = () => {
                     <td className="px-6 py-4 border-2 border-gray-300">
                       {handleRemainingDays(item?.expiresAt)}
                     </td>
+                    <th
+                      scope="row"
+                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-2 border-gray-300"
+                    >
+                   
+  <a
+    href={item?.uploadPath} // The URL to the file
+    download
+    className="text-blue-600 hover:text-blue-800"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Download File
+  </a>
+                    </th>
 
                     {/*<td className=" p-5   border-2  border-gray-300">
                       <div className="flex items-center">

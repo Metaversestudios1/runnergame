@@ -8,75 +8,113 @@ const unzipper = require("unzipper");
 require("dotenv").config();
 
 dotenv.config();
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const insertUpdatePackage = async (req, res) => {
-  try {
-    const { version, description } = req.body;
-    const file = req.files.file;
-
-    // Define storage path
-    const uploadPath = path.join(__dirname, "../uploads/unity_builds", version);
-
-    // Ensure version folder doesn't already exist
-    if (fs.existsSync(uploadPath)) {
-      return res.status(400).json({ message: "Version already exists!" });
+  console.log(req.file)
+  if (req.file) {
+    console.log("req.file is present");
+    const { originalname, buffer, mimetype } = req.file;
+    
+    if (!mimetype || typeof mimetype !== 'string') {
+      console.error("Invalid MIME type:", mimetype);
+      return res.status(400).json({ success: false, message: "Invalid MIME type" });
     }
 
-    // Set expiration date for the existing latest package
-    const currentDate = new Date();
-    const expirationDate = new Date(
-      currentDate.setDate(currentDate.getDate() + 25)
-    );
-    await Package.findOneAndUpdate(
-      { expiresAt: null }, // Find the currently active package
-      { expiresAt: expirationDate }, // Set expiration date
-      { new: true }
-    );
+    try {
+      const { version, description } = req.body;
 
-    // Create directory
-    fs.mkdirSync(uploadPath, { recursive: true });
+      // Ensure the version is unique
+      // const existingPackage = await Package.findOne({ version });
+      // if (existingPackage) {
+      //   return res.status(400).json({ success: false, message: "Version already exists!" });
+      // }
 
-    // Stream and unzip
-    const zipStream = fs.createReadStream(file.tempFilePath);
-    const unzipStream = unzipper.Extract({ path: uploadPath });
+      // Upload the package to Cloudinary
+      const uploadResult = await uploadImage(buffer, originalname, mimetype);
+      if (!uploadResult) {
+        return res.status(500).json({ success: false, message: "File upload error" });
+      }
 
-    zipStream
-      .pipe(unzipStream)
-      .on("close", async () => {
-        if (!fs.existsSync(path.join(uploadPath, "index.html"))) {
-          return res
-            .status(400)
-            .json({ message: "Invalid Unity package structure." });
-        }
+      // Set expiration date for the existing latest package
+      const currentDate = new Date();
+      const expirationDate = new Date(currentDate.setDate(currentDate.getDate() + 25));
+      await Package.findOneAndUpdate(
+        { expiresAt: null }, // Find the currently active package
+        { expiresAt: expirationDate }, // Set expiration date
+        { new: true }
+      );
+      
 
-        // Save the new package to the database
-        try {
-          const newPackage = new Package({
-            version,
-            uploadPath,
-            description,
-            expiresAt: null, // Latest package has no expiration
-          });
-
-          await newPackage.save();
-          res.status(200).json({success : true,  message: "Package uploaded successfully!" });
-        } catch (dbError) {
-          console.error("Database error:", dbError);
-          return res
-            .status(500)
-            .json({
-              message: "Failed to save package details to the database.",
-            });
-        }
-      })
-      .on("error", (err) => {
-        console.error(err);
-        res.status(500).json({ message: "Failed to upload package." });
+      // Save the new package to the database with Cloudinary URL
+      const newPackage = new Package({
+        version,
+        description,
+        uploadPath: uploadResult.secure_url, // Save Cloudinary URL
+        expiresAt: expirationDate, // Latest package has no expiration
       });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "An error occurred.",error});
-  }
+
+      await newPackage.save();
+      res.status(200).json({
+        success: true,
+        message: "Package uploaded successfully to Cloudinary!",
+      });
+    } catch (error) {
+      console.error("Error inserting package:", error.message);
+      res.status(500).json({
+        success: false,
+        message: "Error inserting package",
+        error: error.message,
+      });
+    }
+  } 
+};
+
+// Function to upload file to Cloudinary
+const uploadImage = (buffer, originalname, mimetype) => {
+  return new Promise((resolve, reject) => {
+    if (!mimetype || typeof mimetype !== 'string') {
+      return reject(new Error("MIME type is required and must be a string"));
+    }
+
+    let resourceType = "raw"; // Default to 'raw' for non-image/video files
+
+    if (mimetype.startsWith("image")) {
+      resourceType = "image";
+    } else if (mimetype.startsWith("video")) {
+      resourceType = "video";
+    } else if (mimetype === "application/pdf") {
+      resourceType = "raw"; // Explicitly set PDFs as raw
+    }
+    const fileExtension = path.extname(originalname);
+    const fileNameWithoutExtension = path.basename(originalname, fileExtension);
+    const publicId = `${fileNameWithoutExtension}${fileExtension}`; // Include extension in public_id
+
+    const options = {
+      resource_type: resourceType,
+      public_id: publicId, // Set the public_id with extension
+      use_filename: true,
+      unique_filename: false,
+      overwrite: true,
+    };
+
+    const uploadStream = cloudinary.uploader.upload(
+      `data:${mimetype};base64,${buffer.toString("base64")}`,
+      options,
+      (error, result) => {
+        if (error) {
+          console.error("Cloudinary upload error:", error);
+          return reject(new Error("Cloudinary upload failed"));
+        }
+        console.log("Cloudinary upload result:", result);
+        resolve(result);
+      }
+    );
+  });
 };
 
 // Get Active Unity Package

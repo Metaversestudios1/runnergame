@@ -31,12 +31,27 @@ description:"" ,
       });
       return;
     }
+
+    const maxFileSize = 10* 1024 * 1024; // 5MB in bytes
+    if (data.file.size > maxFileSize) {
+      toast.error("File size exceeds the 10MB limit", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+      return;
+    }
+    
     setLoader(true)
     const formData = new FormData();
     formData.append("file", data.file);
-    formData.append("version",  data.version);
-    formData.append("description",  data.description);
-
+    formData.append("version", data.version);
+    formData.append("description", data.description);
+    console.log('Selected file:', data.file);
 
     try {
       const res = await fetch(
@@ -47,7 +62,6 @@ description:"" ,
         }
       );
       const response = await res.json();
-
       if (response.success) {
         toast.success("New Package is added Successfully!", {
           position: "top-right",
@@ -61,21 +75,11 @@ description:"" ,
         setTimeout(() => {
           navigate("/packages");
         }, 1500);
-      } else {
-        setLoader(false)
-        toast.success("Package updated succesfully", {
-          position: "top-right",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          theme: "light",
-        });
+       
       }
     } catch (error) {
       console.error("Error uploading package:", error);
-      toast.error(response.message , {
+      toast.error(error.message , {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -84,6 +88,9 @@ description:"" ,
         draggable: true,
         theme: "light",
       });
+      setTimeout(() => {
+        navigate("/packages");
+      }, 1500);
     }
   };
 
@@ -128,7 +135,7 @@ description:"" ,
       ) : (
         <>
           <div className="w-[70%] m-auto my-10">
-            <form action="">
+            <form  enctype="multipart/form-data">
               <div className="">
                 <label
                   htmlFor="version"
@@ -190,13 +197,13 @@ description:"" ,
               </div>
               <button
                 type="submit"
-                onClick={handleSubmit}
+                 onClick={handleSubmit}
                 className="text-white bg-[#16144b] hover:bg-[#16144bea] focus:ring-4 focus:outline-none focus:ring-blue-300 my-5 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
               >
                 ADD
               </button>
             </form>
-          </div>{" "}
+          </div>
         </>
       )}
     </div>

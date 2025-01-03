@@ -5,7 +5,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const PORT = process.env.PORT || 8000;
 const path = require("path");
-const fileUpload = require("express-fileupload");
+
 const cron = require("node-cron");
 const status = require("express-status-monitor")
 const cleanupExpiredPackages = require("./jobs/cleanupExpiredPackages.js");
@@ -51,15 +51,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
-
-// Use your routes
-// app.use('/api', GameRoutes(io));
-app.use(
-  fileUpload({
-    useTempFiles: true,
-    tempFileDir: "/tmp/",
-  })
-);
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Serve static files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
