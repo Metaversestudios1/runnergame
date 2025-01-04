@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
 import { CiEdit } from "react-icons/ci";
+import { MdDelete } from "react-icons/md";
 
 const Packages = () => {
   const [packages, setPackages] = useState([]);
@@ -23,11 +24,11 @@ const Packages = () => {
         `${import.meta.env.VITE_BACKEND_URL}/api/getAllPackages`
       );
       const response = await res.json();
-      console.log(response)
+      console.log(response);
       if (response.success) {
         setNoData(false);
         if (response.data.length === 0) {
-          console.log("true")
+          console.log("true");
           setNoData(true);
         }
         setPackages(response.data);
@@ -42,15 +43,15 @@ const Packages = () => {
   const handleDelete = async (e, id) => {
     e.preventDefault();
     const permissionOfDelete = window.confirm(
-      "Are you sure, you want to delete the employee"
+      "Are you sure, you want to delete the package"
     );
     if (permissionOfDelete) {
-      let employeeOne = employees.length === 1;
+      let employeeOne = packages.length === 1;
       if (count === 1) {
         employeeOne = false;
       }
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/deleteEmployee`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/deletePackage`,
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
@@ -62,7 +63,7 @@ const Packages = () => {
       }
       const response = await res.json();
       if (response.success) {
-        toast.success("Employee is deleted Successfully!", {
+        toast.success("package is deleted Successfully!", {
           position: "top-right",
           autoClose: 1000,
           hideProgressBar: false,
@@ -80,34 +81,32 @@ const Packages = () => {
       }
     }
   };
+  //   const handleRemainingDays = (expireFullDate) => {
+  //     if(!expireFullDate) {
+  //       return "N/A"
+  //     }
+  //     const currentDate = new Date();
+  //     const expireDate = new Date(expireFullDate);
 
-  const handleRemainingDays = (expireFullDate) => {
-    if(!expireFullDate) {
-      return "N/A"
-    }
-    const currentDate = new Date();
-    const expireDate = new Date(expireFullDate);
+  //     const remainingTime = expireDate - currentDate; // Difference in milliseconds
 
-    const remainingTime = expireDate - currentDate; // Difference in milliseconds
+  //     if (remainingTime <= 0) {
+  //         return "Expired";
+  //     }
 
-    if (remainingTime <= 0) {
-        return "Expired";
-    }
+  //     const remainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24)); // Convert ms to days
 
-    const remainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24)); // Convert ms to days
+  //     if (remainingDays > 0) {
+  //         return `${remainingDays} day(s) remaining`;
+  //     }
+  //     const remainingHours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); // Hours
+  //     if (remainingHours > 0) {
+  //         return `${remainingHours} hour(s) remaining`;
+  //     }
 
-    if (remainingDays > 0) {
-        return `${remainingDays} day(s) remaining`;
-    }
-    const remainingHours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); // Hours
-    if (remainingHours > 0) {
-        return `${remainingHours} hour(s) remaining`;
-    }
-
-    const remainingMinutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60)); // Minutes
-    return `${remainingMinutes} minute(s) remaining`;
-};
-
+  //     const remainingMinutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60)); // Minutes
+  //     return `${remainingMinutes} minute(s) remaining`;
+  // };
 
   const startIndex = (page - 1) * pageSize;
   return (
@@ -134,7 +133,6 @@ const Packages = () => {
             Add New
           </button>
         </NavLink>
-        
       </div>
       {loader && (
         <div className="absolute h-full w-full  flex justify-center items-center">
@@ -157,18 +155,21 @@ const Packages = () => {
                   Sr no.
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
-                Version
+                  Version
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
                   Description
                 </th>
-                <th scope="col" className="px-6 py-3 border-2 border-gray-300">
+                {/* <th scope="col" className="px-6 py-3 border-2 border-gray-300">
                   Remaining days to expire
+                </th> */}
+                <th scope="col" className="px-6 py-3 border-2 border-gray-300">
+                  View File/Download File
                 </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
-                 View File/Download File
+                  Action
                 </th>
-               {/* <th scope="col" className="px-6 py-3 border-2 border-gray-300">
+                {/* <th scope="col" className="px-6 py-3 border-2 border-gray-300">
                   Action
                 </th>*/}
               </tr>
@@ -197,30 +198,37 @@ const Packages = () => {
                     >
                       {item?.description}
                     </th>
-
-                  
-                    <td className="px-6 py-4 border-2 border-gray-300">
-                      {handleRemainingDays(item?.expiresAt)}
-                    </td>
                     <th
-  scope="row"
-  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-2 border-gray-300"
->
-  {item?.uploadPath ? ( // Check if the record exists
-    <a
-      href={item.uploadPath} // The URL to the file
-      download
-      className="text-blue-600 hover:text-blue-800"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Download File
-    </a>
-  ) : (
-    <span className="text-gray-500">No file available</span> // Message when no file exists
-  )}
-</th>
+                      scope="row"
+                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-2 border-gray-300"
+                    >
+                      {item?.uploadPath ? ( // Check if the record exists
+                        <a
+                          href={item.uploadPath} // The URL to the file
+                          download
+                          className="text-blue-600 hover:text-blue-800"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Download File
+                        </a>
+                      ) : (
+                        <span className="text-gray-500">No file available</span> // Message when no file exists
+                      )}
+                    </th>
 
+                    {/* <td className="px-6 py-4 border-2 border-gray-300">
+                      {handleRemainingDays(item?.expiresAt)}
+                    </td> */}
+                    <th
+                      scope="row"
+                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap border-2 border-gray-300"
+                    >
+                      <MdDelete
+                        onClick={(e) => handleDelete(e, item._id)}
+                        className="text-2xl cursor-pointer text-red-900"
+                      />
+                    </th>
 
                     {/*<td className=" p-5   border-2  border-gray-300">
                       <div className="flex items-center">

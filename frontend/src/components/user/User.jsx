@@ -161,6 +161,15 @@ const User = () => {
                   
                   Email Id
                 </th>
+                <th scope="col" className="px-6 py-3 border-2 border-gray-300">                  
+                  Completed Level
+                </th>
+                <th scope="col" className="px-6 py-3 border-2 border-gray-300">                  
+                  Game play time
+                </th>
+                <th scope="col" className="px-6 py-3 border-2 border-gray-300">                  
+                  No of play count
+                </th>
                 <th scope="col" className="px-6 py-3 border-2 border-gray-300">
                   High Score
                 </th>
@@ -189,6 +198,17 @@ const User = () => {
                     </td>
                     <td className="px-6 py-4 border-2 border-gray-300">
                       {user?.email}
+                    </td>
+                    <td className="px-6 py-4 border-2 border-gray-300">
+                      {user?.level}
+                    </td>
+                    <td className="px-6 py-4 border-2 border-gray-300">
+  {user?.gamePlayTime 
+    ? `${Math.floor(user.gamePlayTime / 60)} min ${user.gamePlayTime % 60} sec` 
+    : "No gameplay time"}
+</td>
+<td className="px-6 py-4 border-2 border-gray-300">
+                      {user?.playCount}
                     </td>
                     <td className="px-6 py-4 border-2 border-gray-300">
                       {user?.highScore}

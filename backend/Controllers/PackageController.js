@@ -41,13 +41,13 @@ const insertUpdatePackage = async (req, res) => {
       }
 
       // Set expiration date for the existing latest package
-      const currentDate = new Date();
-      const expirationDate = new Date(currentDate.setDate(currentDate.getDate() + 25));
-      await Package.findOneAndUpdate(
-        { expiresAt: null }, // Find the currently active package
-        { expiresAt: expirationDate }, // Set expiration date
-        { new: true }
-      );
+      // const currentDate = new Date();
+      // const expirationDate = new Date(currentDate.setDate(currentDate.getDate() + 25));
+      // await Package.findOneAndUpdate(
+      //   { expiresAt: null }, // Find the currently active package
+      //   { expiresAt: expirationDate }, // Set expiration date
+      //   { new: true }
+      // );
       
 
       // Save the new package to the database with Cloudinary URL
@@ -55,7 +55,7 @@ const insertUpdatePackage = async (req, res) => {
         version,
         description,
         uploadPath: uploadResult.secure_url, // Save Cloudinary URL
-        expiresAt: expirationDate, // Latest package has no expiration
+        // expiresAt: expirationDate, // Latest package has no expiration
       });
 
       await newPackage.save();
@@ -145,7 +145,7 @@ const getActivePackage = async (req, res) => {
 const getAllPackages = async (req, res) => {
   try {
 
-    const packages = await Package.find({}).sort({ createdAt: -1 });
+    const packages = await Package.find({  deleted_at: null}).sort({ createdAt: -1 });
 
     return res.status(200).json({
       success: true,
@@ -162,4 +162,30 @@ const getAllPackages = async (req, res) => {
   }
 };
 
-module.exports = { insertUpdatePackage, getAllPackages, getActivePackage };
+
+const deletePackage = async (req, res) => {
+  const { id } = req.body; // Get the ID from the request parameters
+console.log(id)
+  try {
+
+    const result = await Package.findByIdAndUpdate(
+      id,
+      { deleted_at: new Date() },
+      { new: true }
+    );
+
+    if (!result) {
+      return res
+        .status(404)
+        .json({ success: false, message: "package not found" });
+    }
+
+    res.status(200).json({ success: true });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ success: false, message: "Error updating data: " + err.message });
+  }
+};
+
+module.exports = { insertUpdatePackage, getAllPackages, getActivePackage ,deletePackage};

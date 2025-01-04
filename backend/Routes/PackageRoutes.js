@@ -1,5 +1,5 @@
 const express =require('express');
-const {insertUpdatePackage,getAllPackages, getActivePackage}=require("../Controllers/PackageController");
+const {insertUpdatePackage,getAllPackages, getActivePackage,deletePackage}=require("../Controllers/PackageController");
 const router = express.Router();
 const multer = require('multer');
 const storage = multer.memoryStorage();
@@ -20,6 +20,8 @@ const upload = multer({
 router.post('/insertUpdatePackage', upload.single('file'),  insertUpdatePackage);
 router.get('/getAllPackages',getAllPackages)
 router.get("/active-package", getActivePackage);
+router.delete("/deletePackage", deletePackage);
+
   
 
 module.exports = router;
