@@ -7,20 +7,24 @@ const fs = require("fs");
 const unzipper = require("unzipper");
 require("dotenv").config();
 
-dotenv.config();
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+
+// Configure the S3 client
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
 });
 
 const insertUpdatePackage = async (req, res) => {
-  console.log(req.file)
+  console.log(req.file);
   if (req.file) {
     console.log("req.file is present");
     const { originalname, buffer, mimetype } = req.file;
-    
-    if (!mimetype || typeof mimetype !== 'string') {
+
+    if (!mimetype || typeof mimetype !== "string") {
       console.error("Invalid MIME type:", mimetype);
       return res.status(400).json({ success: false, message: "Invalid MIME type" });
     }
@@ -28,40 +32,23 @@ const insertUpdatePackage = async (req, res) => {
     try {
       const { version, description } = req.body;
 
-      // Ensure the version is unique
-      // const existingPackage = await Package.findOne({ version });
-      // if (existingPackage) {
-      //   return res.status(400).json({ success: false, message: "Version already exists!" });
-      // }
-
-      // Upload the package to Cloudinary
-      const uploadResult = await uploadImage(buffer, originalname, mimetype);
+      // Upload the package to S3
+      const uploadResult = await uploadFileToS3(originalname, buffer);
       if (!uploadResult) {
         return res.status(500).json({ success: false, message: "File upload error" });
       }
 
-      // Set expiration date for the existing latest package
-      // const currentDate = new Date();
-      // const expirationDate = new Date(currentDate.setDate(currentDate.getDate() + 25));
-      // await Package.findOneAndUpdate(
-      //   { expiresAt: null }, // Find the currently active package
-      //   { expiresAt: expirationDate }, // Set expiration date
-      //   { new: true }
-      // );
-      
-
-      // Save the new package to the database with Cloudinary URL
+      // Save the new package to the database with S3 URL
       const newPackage = new Package({
         version,
         description,
-        uploadPath: uploadResult.secure_url, // Save Cloudinary URL
-        // expiresAt: expirationDate, // Latest package has no expiration
+        uploadPath: uploadResult.Location, // Save the S3 file URL
       });
 
       await newPackage.save();
       res.status(200).json({
         success: true,
-        message: "Package uploaded successfully to Cloudinary!",
+        message: "Package uploaded successfully to S3!",
       });
     } catch (error) {
       console.error("Error inserting package:", error.message);
@@ -71,51 +58,147 @@ const insertUpdatePackage = async (req, res) => {
         error: error.message,
       });
     }
-  } 
+  } else {
+    return res.status(400).json({
+      success: false,
+      message: "No file provided in the request",
+    });
+  }
 };
 
-// Function to upload file to Cloudinary
-const uploadImage = (buffer, originalname, mimetype) => {
-  return new Promise((resolve, reject) => {
-    if (!mimetype || typeof mimetype !== 'string') {
-      return reject(new Error("MIME type is required and must be a string"));
-    }
+// Function to upload a file to AWS S3
+const uploadFileToS3 = async (fileName, fileContent) => {
+  const params = {
+    Bucket: process.env.AWS_BUCKET_NAME, // Bucket name from .env
+    Key: fileName, // File name
+    Body: fileContent, // File content (buffer)
+    ACL: "public-read", // Optional: Makes the file publicly accessible
+    ContentType: "application/octet-stream", // Default content type
+  };
 
-    let resourceType = "raw"; // Default to 'raw' for non-image/video files
-
-    if (mimetype.startsWith("image")) {
-      resourceType = "image";
-    } else if (mimetype.startsWith("video")) {
-      resourceType = "video";
-    } else if (mimetype === "application/pdf") {
-      resourceType = "raw"; // Explicitly set PDFs as raw
-    }
-    const fileExtension = path.extname(originalname);
-    const fileNameWithoutExtension = path.basename(originalname, fileExtension);
-    const publicId = `${fileNameWithoutExtension}${fileExtension}`; // Include extension in public_id
-
-    const options = {
-      resource_type: resourceType,
-      public_id: publicId, // Set the public_id with extension
-      use_filename: true,
-      unique_filename: false,
-      overwrite: true,
+  try {
+    const command = new PutObjectCommand(params); // Create the command
+    const result = await s3.send(command); // Send the command to S3
+    console.log("File uploaded successfully:", result);
+    return {
+      Location: `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`, // Construct the public URL
     };
-
-    const uploadStream = cloudinary.uploader.upload(
-      `data:${mimetype};base64,${buffer.toString("base64")}`,
-      options,
-      (error, result) => {
-        if (error) {
-          console.error("Cloudinary upload error:", error);
-          return reject(new Error("Cloudinary upload failed"));
-        }
-        console.log("Cloudinary upload result:", result);
-        resolve(result);
-      }
-    );
-  });
+  } catch (error) {
+    console.error("Error uploading file to S3:", error.message);
+    throw new Error("Failed to upload file to S3");
+  }
 };
+
+
+// dotenv.config();
+// cloudinary.config({
+//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//   api_key: process.env.CLOUDINARY_API_KEY,
+//   api_secret: process.env.CLOUDINARY_API_SECRET,
+// });
+
+// const insertUpdatePackage = async (req, res) => {
+//   console.log(req.file)
+//   if (req.file) {
+//     console.log("req.file is present");
+//     const { originalname, buffer, mimetype } = req.file;
+    
+//     if (!mimetype || typeof mimetype !== 'string') {
+//       console.error("Invalid MIME type:", mimetype);
+//       return res.status(400).json({ success: false, message: "Invalid MIME type" });
+//     }
+
+//     try {
+//       const { version, description } = req.body;
+
+//       // Ensure the version is unique
+//       // const existingPackage = await Package.findOne({ version });
+//       // if (existingPackage) {
+//       //   return res.status(400).json({ success: false, message: "Version already exists!" });
+//       // }
+
+//       // Upload the package to Cloudinary
+//       const uploadResult = await uploadImage(buffer, originalname, mimetype);
+//       if (!uploadResult) {
+//         return res.status(500).json({ success: false, message: "File upload error" });
+//       }
+
+//       // Set expiration date for the existing latest package
+//       // const currentDate = new Date();
+//       // const expirationDate = new Date(currentDate.setDate(currentDate.getDate() + 25));
+//       // await Package.findOneAndUpdate(
+//       //   { expiresAt: null }, // Find the currently active package
+//       //   { expiresAt: expirationDate }, // Set expiration date
+//       //   { new: true }
+//       // );
+      
+
+//       // Save the new package to the database with Cloudinary URL
+//       const newPackage = new Package({
+//         version,
+//         description,
+//         uploadPath: uploadResult.secure_url, // Save Cloudinary URL
+//         // expiresAt: expirationDate, // Latest package has no expiration
+//       });
+
+//       await newPackage.save();
+//       res.status(200).json({
+//         success: true,
+//         message: "Package uploaded successfully to Cloudinary!",
+//       });
+//     } catch (error) {
+//       console.error("Error inserting package:", error.message);
+//       res.status(500).json({
+//         success: false,
+//         message: "Error inserting package",
+//         error: error.message,
+//       });
+//     }
+//   } 
+// };
+
+// // Function to upload file to Cloudinary
+// const uploadImage = (buffer, originalname, mimetype) => {
+//   return new Promise((resolve, reject) => {
+//     if (!mimetype || typeof mimetype !== 'string') {
+//       return reject(new Error("MIME type is required and must be a string"));
+//     }
+
+//     let resourceType = "raw"; // Default to 'raw' for non-image/video files
+
+//     if (mimetype.startsWith("image")) {
+//       resourceType = "image";
+//     } else if (mimetype.startsWith("video")) {
+//       resourceType = "video";
+//     } else if (mimetype === "application/pdf") {
+//       resourceType = "raw"; // Explicitly set PDFs as raw
+//     }
+//     const fileExtension = path.extname(originalname);
+//     const fileNameWithoutExtension = path.basename(originalname, fileExtension);
+//     const publicId = `${fileNameWithoutExtension}${fileExtension}`; // Include extension in public_id
+
+//     const options = {
+//       resource_type: resourceType,
+//       public_id: publicId, // Set the public_id with extension
+//       use_filename: true,
+//       unique_filename: false,
+//       overwrite: true,
+//     };
+
+//     const uploadStream = cloudinary.uploader.upload(
+//       `data:${mimetype};base64,${buffer.toString("base64")}`,
+//       options,
+//       (error, result) => {
+//         if (error) {
+//           console.error("Cloudinary upload error:", error);
+//           return reject(new Error("Cloudinary upload failed"));
+//         }
+//         console.log("Cloudinary upload result:", result);
+//         resolve(result);
+//       }
+//     );
+//   });
+// };
 
 // Get Active Unity Package
 const getActivePackage = async (req, res) => {
@@ -164,27 +247,40 @@ const getAllPackages = async (req, res) => {
 
 
 const deletePackage = async (req, res) => {
-  const { id } = req.body; // Get the ID from the request parameters
-console.log(id)
-  try {
+  const { id } = req.body; // Get the ID from the request body
+  console.log(id);
 
+  try {
+    // Find the package in the database
+    const package = await Package.findById(id);
+
+    if (!package) {
+      return res.status(404).json({ success: false, message: "Package not found" });
+    }
+
+    // Delete file from AWS S3 if there is a file
+    if (package.s3FilePath) {
+      const params = {
+        Bucket: 'your-s3-bucket-name', // replace with your bucket name
+        Key: package.s3FilePath, // the file path/key in S3
+      };
+
+      // Delete the file from S3
+      await s3.deleteObject(params).promise();
+      console.log(`File deleted from S3: ${package.s3FilePath}`);
+    }
+
+    // Mark the package as deleted in the database
     const result = await Package.findByIdAndUpdate(
       id,
       { deleted_at: new Date() },
       { new: true }
     );
 
-    if (!result) {
-      return res
-        .status(404)
-        .json({ success: false, message: "package not found" });
-    }
+    res.status(200).json({ success: true, message: 'Package deleted successfully' });
 
-    res.status(200).json({ success: true });
   } catch (err) {
-    res
-      .status(500)
-      .json({ success: false, message: "Error updating data: " + err.message });
+    res.status(500).json({ success: false, message: 'Error deleting package: ' + err.message });
   }
 };
 

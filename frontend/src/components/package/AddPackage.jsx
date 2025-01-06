@@ -32,19 +32,19 @@ description:"" ,
       return;
     }
 
-    const maxFileSize = 10* 1024 * 1024; // 5MB in bytes
-    if (data.file.size > maxFileSize) {
-      toast.error("File size exceeds the 10MB limit", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-      });
-      return;
-    }
+    // const maxFileSize = 10* 1024 * 1024; // 5MB in bytes
+    // if (data.file.size > maxFileSize) {
+    //   toast.error("File size exceeds the 10MB limit", {
+    //     position: "top-right",
+    //     autoClose: 2000,
+    //     hideProgressBar: false,
+    //     closeOnClick: true,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //     theme: "light",
+    //   });
+    //   return;
+    // }
     
 
     const allowedFileTypes = ['application/zip', 'application/x-zip-compressed', 'multipart/x-zip']; // MIME types for ZIP files
