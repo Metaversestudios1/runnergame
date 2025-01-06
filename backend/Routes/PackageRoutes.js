@@ -1,19 +1,17 @@
-// /api/PackageRoutes.js
+const { insertUpdatePackage, getAllPackages, getActivePackage, deletePackage } = require("../Controllers/PackageController");
+const multer = require("multer");
+const express = require("express");
+
+const router = express.Router();
 
 // Vercel API route configuration to increase the size limit
-export const config = {
+module.exports.config = {
   api: {
     bodyParser: {
       sizeLimit: '2gb', // Allow file size up to 2GB
     },
   },
 };
-
-import { insertUpdatePackage, getAllPackages, getActivePackage, deletePackage } from "../Controllers/PackageController";
-import multer from "multer";
-import express from "express";
-
-const router = express.Router();
 
 // Set up multer for file uploads with memory storage
 const upload = multer({
@@ -57,4 +55,4 @@ router.delete("/deletePackage", (req, res) => {
   deletePackage(req, res);
 });
 
-export default router;
+module.exports = router;
