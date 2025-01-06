@@ -4,6 +4,8 @@ const router = express.Router();
 const multer = require('multer');
 const storage = multer.memoryStorage();
 
+router.use(express.json({ limit: '2gb' })); // Limit the request body size to 2GB
+
 const upload = multer({
   storage: storage,
   limits: { fileSize: 2 * 1024 * 1024 * 1024 }, // 1GB limit
