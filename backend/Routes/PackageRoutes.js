@@ -1,3 +1,13 @@
+
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '2gb', // Set the body size limit to 2GB
+    },
+  },
+};
+
 const express =require('express');
 const {insertUpdatePackage,getAllPackages, getActivePackage,deletePackage}=require("../Controllers/PackageController");
 const router = express.Router();
