@@ -1,58 +1,29 @@
-const { insertUpdatePackage, getAllPackages, getActivePackage, deletePackage } = require("../Controllers/PackageController");
-const multer = require("multer");
-const express = require("express");
-
+const express =require('express');
+const {insertUpdatePackage,getAllPackages, getActivePackage,deletePackage}=require("../Controllers/PackageController");
 const router = express.Router();
+const multer = require('multer');
+const storage = multer.memoryStorage();
 
-// Vercel API route configuration to increase the size limit
-module.exports.config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '2gb', // Allow file size up to 2GB
-    },
-  },
-};
+router.use(express.json({ limit: '1gb' })); // Limit the request body size to 2GB
 
-// Set up multer for file uploads with memory storage
 const upload = multer({
-  storage: multer.memoryStorage(), // Store files in memory
-  limits: { fileSize: 2 * 1024 * 1024 * 1024 }, // 2GB limit
-  fileFilter: (req, file, cb) => {
+  storage: storage,
+  limits: { fileSize: 1 * 1024 * 1024 * 1024 }, // 1GB limit
+  fileFilter: (req, file, cb) => { 
     if (file.mimetype) {
       cb(null, true);
     } else {
-      cb(new Error("Invalid file type, only certain files are allowed!"), false);
+      cb(new Error('Invalid file type, only certain files are allowed!'), false);
     }
-  },
+  }
 });
 
-// Route handler for inserting/updating a package with file upload
-router.post("/insertUpdatePackage", (req, res) => {
-  upload.single("file")(req, res, (err) => {
-    if (err) {
-      return res.status(400).json({
-        success: false,
-        message: "File upload failed",
-        error: err.message,
-      });
-    }
-    insertUpdatePackage(req, res); // Call the controller function
-  });
-});
+// Handle the form submission using multer middleware
+router.post('/insertUpdatePackage', upload.single('file'),  insertUpdatePackage);
+router.get('/getAllPackages',getAllPackages)
+router.get("/active-package", getActivePackage);
+router.delete("/deletePackage", deletePackage);
 
-// Route handler for fetching all packages
-router.get("/getAllPackages", (req, res) => {
-  getAllPackages(req, res);
-});
-
-// Route handler for fetching the active package
-router.get("/active-package", (req, res) => {
-  getActivePackage(req, res);
-});
-
-// Route handler for deleting a package
-router.delete("/deletePackage", (req, res) => {
-  deletePackage(req, res);
-});
+  
 
 module.exports = router;

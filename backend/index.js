@@ -51,8 +51,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
-app.use(express.json({ limit: '2gb' }));
-app.use(express.urlencoded({ limit: '2gb', extended: true }));
+app.use(express.json({ limit: '1gb' }));
+app.use(express.urlencoded({ limit: '1gb', extended: true }));
 
 
 // Serve static files
